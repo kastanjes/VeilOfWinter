@@ -2,30 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class IceTrigger : MonoBehaviour
 {
+    public GameObject iceObject;
+    public AudioClip dropSound;
+    public GameObject impactEffectPrefab;
 
+    private AudioSource audioSource;
 
+    private void Start()
+    {
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.CompareTag("Player"))
         {
-            this.transform.parent.gameObject.GetComponent<IceDrop>().Drop();
-            Debug.Log("jakob er en lille pølse");
+            IceDrop dropScript = iceObject.GetComponent<IceDrop>();
+            if (dropScript != null)
+            {
+                dropScript.Drop();
+            }
+
+            if (dropSound != null)
+            {
+                audioSource.PlayOneShot(dropSound);
+            }
+
+            Debug.Log("Jakob lugter af pølse");
         }
-
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
+
