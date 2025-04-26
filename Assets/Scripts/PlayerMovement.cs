@@ -17,6 +17,8 @@ public class CharacterMovement : MonoBehaviour
     public float groundCheckDistance = 0.2f;
     private CharacterAnimation characterAnimation;
 
+    
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -46,6 +48,7 @@ public class CharacterMovement : MonoBehaviour
             animator.ResetTrigger("JumpTrigger"); // optional safety
             animator.SetTrigger("JumpTrigger");
         }
+
     }
 
     void FixedUpdate()
