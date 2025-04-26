@@ -5,8 +5,10 @@ public class CharacterMovement : MonoBehaviour
 {
     Animator animator;
 
+    public bool canMove = true; 
     public float maxMoveSpeed = 5f;
-    public float jumpForce = 7f;
+    public float jumpForce = 7f; 
+
 
     private Rigidbody rb;
     private bool isGrounded;
@@ -24,6 +26,8 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
+        if (!canMove) return;
+
         // Ground check using raycast
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f, groundLayer);
 
@@ -46,6 +50,8 @@ public class CharacterMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (!canMove) return;
+
         float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
         float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
 

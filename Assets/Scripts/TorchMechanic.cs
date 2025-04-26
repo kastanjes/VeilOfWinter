@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TorchMechanic : MonoBehaviour
@@ -12,7 +11,8 @@ public class TorchMechanic : MonoBehaviour
     private float fadeRate;
     private bool canPickupTorch = false;
 
-    private GameObject torchPrefab; 
+    private GameObject torchInRange;
+    private bool isPickingUp = false;
 
     void Start()
     {
@@ -30,12 +30,45 @@ public class TorchMechanic : MonoBehaviour
             Fading();
         }
 
-        if (canPickupTorch && Input.GetKeyDown(KeyCode.E))
+        if (canPickupTorch && Input.GetKeyDown(KeyCode.E) && !isPickingUp)
         {
-            Debug.Log("Torch picked up! Destroying collectible torch.");
-            TorchPickup();
-            Destroy(torchPrefab);
+            Debug.Log("E pressed near torch. Starting pickup.");
+            StartCoroutine(PickupTorchCoroutine());
         }
+    }
+
+    IEnumerator PickupTorchCoroutine()
+    {
+        isPickingUp = true;
+
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            CharacterMovement movement = player.GetComponent<CharacterMovement>();
+            Animator animator = player.GetComponent<Animator>();
+
+            if (movement != null) movement.canMove = false;
+
+            if (animator != null)
+            {
+                animator.ResetTrigger("TorchTrigger");
+                animator.SetTrigger("TorchTrigger");
+            }
+
+            yield return new WaitForSeconds(2f);
+
+            TorchPickup();
+
+            if (torchInRange != null)
+                Destroy(torchInRange);
+
+            if (movement != null)
+                movement.canMove = true;
+
+            Debug.Log("Torch pickup complete.");
+        }
+
+        isPickingUp = false;
     }
 
     public void Fading()
@@ -64,21 +97,21 @@ public class TorchMechanic : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Torch")) 
+        if (other.CompareTag("CollectableTorch"))
         {
             canPickupTorch = true;
-            torchPrefab = other.gameObject;
-            Debug.Log("Player entered pickup range of a torch.");
+            torchInRange = other.gameObject;
+            Debug.Log("Collectable torch in range.");
         }
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("Torch"))
+        if (other.CompareTag("CollectableTorch"))
         {
             canPickupTorch = false;
-            torchPrefab = null;
-            Debug.Log("Player exited pickup range of a torch.");
+            torchInRange = null;
+            Debug.Log("Left collectable torch range.");
         }
     }
 }
