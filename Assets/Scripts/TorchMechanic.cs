@@ -25,10 +25,14 @@ public class TorchMechanic : MonoBehaviour
 
     void Update()
     {
+        
+
         if (isLit)
         {
             Fading();
         }
+
+        if (!canPickupTorch) return;
 
         if (canPickupTorch && Input.GetKeyDown(KeyCode.E) && !isPickingUp)
         {
@@ -37,39 +41,52 @@ public class TorchMechanic : MonoBehaviour
         }
     }
 
-    IEnumerator PickupTorchCoroutine()
+IEnumerator PickupTorchCoroutine()
+{
+    isPickingUp = true;
+
+    GameObject player = GameObject.FindWithTag("Player");
+    if (player != null)
     {
-        isPickingUp = true;
+        CharacterMovement movement = player.GetComponent<CharacterMovement>();
+        Animator animator = player.GetComponent<Animator>();
 
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player != null)
+        if (movement != null)
         {
-            CharacterMovement movement = player.GetComponent<CharacterMovement>();
-            Animator animator = player.GetComponent<Animator>();
-
-            if (movement != null) movement.canMove = false;
-
-            if (animator != null)
-            {
-                animator.ResetTrigger("TorchTrigger");
-                animator.SetTrigger("TorchTrigger");
-            }
-
-            yield return new WaitForSeconds(2f);
-
-            TorchPickup();
-
-            if (torchInRange != null)
-                Destroy(torchInRange);
-
-            if (movement != null)
-                movement.canMove = true;
-
-            Debug.Log("Torch pickup complete.");
+            movement.canMove = false;
+            movement.StartTorchPickup(); // <<< THIS makes the Rigidbody kinematic
         }
 
-        isPickingUp = false;
+        if (animator != null)
+        {
+            animator.ResetTrigger("TorchTrigger");
+            animator.SetTrigger("TorchTrigger");
+        }
+
+        yield return new WaitForSeconds(2f);
+
+        TorchPickup();
+
+        if (torchInRange != null)
+        {
+            Destroy(torchInRange);
+            torchInRange = null;
+            canPickupTorch = false; // <<< Add this line
+        }
+
+
+        if (movement != null)
+        {
+            movement.canMove = true;
+            movement.EndTorchPickup(); // <<< THIS restores the Rigidbody to normal
+        }
+
+        Debug.Log("Torch pickup complete.");
     }
+
+    isPickingUp = false;
+}
+
 
     public void Fading()
     {
