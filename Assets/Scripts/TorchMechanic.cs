@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class TorchMechanic : MonoBehaviour
 {
-    public Light torch;
-    public float startIntensity;
-    public int fadeTime = 10;
+    public ParticleSystem torchParticles;  // Reference to the Particle System
+    public float startSize;               // Starting size of the particles
+    public int fadeTime = 10;             // Time to fade out the particles
 
     private bool isLit = true;
     private float fadeRate;
@@ -16,17 +16,16 @@ public class TorchMechanic : MonoBehaviour
 
     void Start()
     {
-        if (torch == null)
-            torch = GetComponent<Light>();
+        if (torchParticles == null)
+            torchParticles = GetComponent<ParticleSystem>();  // Get the Particle System attached to the GameObject
 
-        startIntensity = torch.intensity;
-        fadeRate = startIntensity / fadeTime;
+        var main = torchParticles.main;
+        startSize = main.startSize.constant;  // Get the starting size of the particles
+        fadeRate = startSize / fadeTime;
     }
 
     void Update()
     {
-        
-
         if (isLit)
         {
             Fading();
@@ -41,63 +40,63 @@ public class TorchMechanic : MonoBehaviour
         }
     }
 
-IEnumerator PickupTorchCoroutine()
-{
-    isPickingUp = true;
-
-    GameObject player = GameObject.FindWithTag("Player");
-    if (player != null)
+    IEnumerator PickupTorchCoroutine()
     {
-        CharacterMovement movement = player.GetComponent<CharacterMovement>();
-        Animator animator = player.GetComponent<Animator>();
+        isPickingUp = true;
 
-        if (movement != null)
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
         {
-            movement.canMove = false;
-            movement.StartTorchPickup(); // <<< THIS makes the Rigidbody kinematic
+            CharacterMovement movement = player.GetComponent<CharacterMovement>();
+            Animator animator = player.GetComponent<Animator>();
+
+            if (movement != null)
+            {
+                movement.canMove = false;
+                movement.StartTorchPickup(); // <<< THIS makes the Rigidbody kinematic
+            }
+
+            if (animator != null)
+            {
+                animator.ResetTrigger("TorchTrigger");
+                animator.SetTrigger("TorchTrigger");
+            }
+
+            yield return new WaitForSeconds(2f);
+
+            TorchPickup();
+
+            if (torchInRange != null)
+            {
+                Destroy(torchInRange);
+                torchInRange = null;
+                canPickupTorch = false; // <<< Add this line
+            }
+
+            if (movement != null)
+            {
+                movement.canMove = true;
+                movement.EndTorchPickup(); // <<< THIS restores the Rigidbody to normal
+            }
+
+            Debug.Log("Torch pickup complete.");
         }
 
-        if (animator != null)
-        {
-            animator.ResetTrigger("TorchTrigger");
-            animator.SetTrigger("TorchTrigger");
-        }
-
-        yield return new WaitForSeconds(2f);
-
-        TorchPickup();
-
-        if (torchInRange != null)
-        {
-            Destroy(torchInRange);
-            torchInRange = null;
-            canPickupTorch = false; // <<< Add this line
-        }
-
-
-        if (movement != null)
-        {
-            movement.canMove = true;
-            movement.EndTorchPickup(); // <<< THIS restores the Rigidbody to normal
-        }
-
-        Debug.Log("Torch pickup complete.");
+        isPickingUp = false;
     }
-
-    isPickingUp = false;
-}
-
 
     public void Fading()
     {
-        if (torch.intensity > 0)
-        {
-            torch.intensity -= fadeRate * Time.deltaTime;
+        var main = torchParticles.main;
 
-            if (torch.intensity <= 0)
+        if (main.startSize.constant > 0)
+        {
+            main.startSize = Mathf.Max(0, main.startSize.constant - fadeRate * Time.deltaTime);
+
+            if (main.startSize.constant <= 0)
             {
-                torch.intensity = 0;
-                torch.enabled = false;
+                main.startSize = 0;
+                torchParticles.Stop();
                 isLit = false;
                 Debug.Log("Torch faded out.");
             }
@@ -106,8 +105,9 @@ IEnumerator PickupTorchCoroutine()
 
     public void TorchPickup()
     {
-        torch.enabled = true;
-        torch.intensity = startIntensity;
+        torchParticles.Play();  // Play the particles when the torch is lit
+        var main = torchParticles.main;
+        main.startSize = startSize;  // Reset the particle size to the start value
         isLit = true;
         Debug.Log("Torch re-lit");
     }
