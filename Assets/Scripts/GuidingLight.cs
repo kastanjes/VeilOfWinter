@@ -3,44 +3,49 @@ using UnityEngine;
 
 public class GuidingLightPath : MonoBehaviour
 {
-    public List<Transform> waypoints;   // Assign your waypoints in the Inspector
-    public float moveSpeed = 2f;         // Movement speed
-    public float hoverAmplitude = 0.5f;  // How much it floats
-    public float hoverFrequency = 2f;    // How fast it floats
+    public List<Transform> waypoints;
+    public float moveSpeed = 2f;
+    public float hoverAmplitude = 0.5f;
+    public float hoverFrequency = 2f;
 
     private int currentWaypoint = 0;
     private bool moving = false;
     private Vector3 startPosition;
+    private Vector3 hoverCenter;
 
     void Start()
     {
         if (waypoints.Count > 0)
+        {
             transform.position = waypoints[0].position;
-        startPosition = transform.position;
+            hoverCenter = transform.position; // Save the center for hovering
+        }
     }
 
     void Update()
     {
+        if (waypoints.Count == 0)
+            return;
+
+        // Always hover, moving or not
+        float hover = Mathf.Sin(Time.time * hoverFrequency) * hoverAmplitude;
+        Vector3 hoverOffset = new Vector3(0, hover, 0);
+
         if (moving && currentWaypoint < waypoints.Count)
         {
             Vector3 targetPosition = waypoints[currentWaypoint].position;
+            Vector3 moveDirection = (targetPosition - hoverCenter).normalized;
 
-            // Add hover animation
-            float hover = Mathf.Sin(Time.time * hoverFrequency) * hoverAmplitude;
-            Vector3 hoverOffset = new Vector3(0, hover, 0);
+            hoverCenter += moveDirection * moveSpeed * Time.deltaTime;
 
-            Vector3 moveDirection = (targetPosition - transform.position).normalized;
-            transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-            // Apply hover
-            transform.position += hoverOffset * Time.deltaTime;
-
-            // If close enough to the waypoint
-            if (Vector3.Distance(transform.position, targetPosition) < 0.5f)
+            if (Vector3.Distance(hoverCenter, targetPosition) < 0.5f)
             {
-                moving = false; // Wait until triggered again
+                moving = false;
+                hoverCenter = targetPosition; // Snap to the waypoint center
             }
         }
+
+        transform.position = hoverCenter + hoverOffset;
     }
 
     public void MoveToNextWaypoint()
