@@ -126,43 +126,29 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleJumping()
     {
+        // Simple grundlæggende hop kraft
         Vector3 jumpVector = Vector3.up * jumpForce;
-        float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
-
-        if (isInWindGust)
+        
+        // Anvend altid basis-hop kraften
+        rb.AddForce(jumpVector, ForceMode.Impulse);
+        
+        // Hvis vi er i et vindstød
+        if (isInWindGust && windZone != null)
         {
-            Vector3 windDirection = windZone.transform.forward;
-            Vector3 forwardMovement = Vector3.zero;
-
-            if (forward > 0)
-            {
-                forwardMovement = transform.forward * (forward * maxMoveSpeed * forwardJumpForceReduction);
-                Vector3 backwardsVector = -windDirection * windBackwardsForce;
-                rb.AddForce(jumpVector + forwardMovement + backwardsVector, ForceMode.Impulse);
-            }
-            else
-            {
-                Vector3 backwardsVector = -windDirection * windBackwardsForce;
-                if (forward < 0)
-                    backwardsVector *= 1.2f;
-                rb.AddForce(jumpVector + backwardsVector, ForceMode.Impulse);
-            }
+            // MEGET SIMPEL LØSNING - RETTET:
+            // Brug den rigtige retning!
+            
+            // Dette er i verdenskoordinater - ikke relateret til spillerens rotation
+            Vector3 worldBackward = new Vector3(0, 0, -1); // Baglæns på z-aksen (ÆNDRET til -1)
+            
+            // Anvendt som en ekstrem kraft
+            rb.AddForce(worldBackward * windBackwardsForce * 2.0f, ForceMode.Impulse);
+            Debug.Log("EKSTREM BAGLÆNS KRAFT: " + (worldBackward * windBackwardsForce * 2.0f));
         }
-        else
-        {
-            Vector3 directionVector = Vector3.zero;
-            if (forward != 0)
-                directionVector = transform.forward * (forward * maxMoveSpeed * 0.5f);
-
-            if (isOnIce && slidingDirection.magnitude > 0.1f)
-                directionVector += slidingDirection * maxMoveSpeed * 0.3f;
-
-            rb.AddForce(jumpVector + directionVector, ForceMode.Impulse);
-        }
-
+        
+        // Trigger animation
         animator.ResetTrigger("JumpTrigger");
         animator.SetTrigger("JumpTrigger");
-
         jumpTriggered = true;
     }
 
@@ -188,7 +174,7 @@ public class CharacterMovement : MonoBehaviour
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
     }
 
-        public void StartTorchPickup()
+    public void StartTorchPickup()
     {
         isPickingUpTorch = true;
         rb.isKinematic = true;
