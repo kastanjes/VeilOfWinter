@@ -86,8 +86,6 @@ public class CharacterMovement : MonoBehaviour
                 animator.SetTrigger("Wind");
                 windAnimationTriggered = true;
             }
-
-            // Don't manually set velocity while wind is pushing
         }
         else
         {
@@ -110,17 +108,30 @@ public class CharacterMovement : MonoBehaviour
 
     private void CheckGroundedAndSurface()
     {
-        RaycastHit hit;
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, out hit, groundCheckDistance + 0.1f, groundLayer);
-
+        // Brug OverlapSphere for mere pålidelig detektion
+        Vector3 spherePosition = transform.position - new Vector3(0, groundCheckDistance / 2, 0);
+        float sphereRadius = 0.3f;
+        
+        // Få alle colliders inden for sfæren
+        Collider[] hitColliders = Physics.OverlapSphere(spherePosition, sphereRadius, groundLayer);
+        
+        // Nulstil status
+        isGrounded = hitColliders.Length > 0;
+        isOnIce = false;
+        
         if (isGrounded)
         {
-            isOnIce = hit.collider.CompareTag(iceSurfaceTag);
+            // Check hvert objekt for is-tag
+            foreach (Collider col in hitColliders)
+            {
+                if (col.CompareTag(iceSurfaceTag))
+                {
+                    isOnIce = true;
+                    break;
+                }
+            }
+            
             jumpTriggered = false;
-        }
-        else
-        {
-            isOnIce = false;
         }
     }
 
@@ -135,15 +146,11 @@ public class CharacterMovement : MonoBehaviour
         // Hvis vi er i et vindstød
         if (isInWindGust && windZone != null)
         {
-            // MEGET SIMPEL LØSNING - RETTET:
-            // Brug den rigtige retning!
-            
             // Dette er i verdenskoordinater - ikke relateret til spillerens rotation
-            Vector3 worldBackward = new Vector3(0, 0, -1); // Baglæns på z-aksen (ÆNDRET til -1)
+            Vector3 worldBackward = new Vector3(0, 0, -1); // Baglæns på z-aksen
             
             // Anvendt som en ekstrem kraft
             rb.AddForce(worldBackward * windBackwardsForce * 2.0f, ForceMode.Impulse);
-            Debug.Log("EKSTREM BAGLÆNS KRAFT: " + (worldBackward * windBackwardsForce * 2.0f));
         }
         
         // Trigger animation
@@ -163,14 +170,25 @@ public class CharacterMovement : MonoBehaviour
     {
         if (moveDirection.magnitude > 0.1f)
         {
-            slidingDirection = Vector3.Lerp(slidingDirection, moveDirection, 1 - iceSlideFactor);
+            // Gradvis ændring af glidningsretning baseret på input
+            float lerpFactor = 1 - iceSlideFactor; // 0.05 hvis iceSlideFactor er 0.95
+            slidingDirection = Vector3.Lerp(slidingDirection, moveDirection, lerpFactor);
+        }
+        else if (slidingDirection.magnitude > 0.01f)
+        {
+            // Gradvis aftagen af glidning når der ikke er input
+            slidingDirection = Vector3.Lerp(slidingDirection, Vector3.zero, Time.deltaTime * 0.3f);
         }
 
+        // Anvend hastighedsmodifikatorer
         float speedModifier = iceSpeedMultiplier;
         if (isInWindGust)
             speedModifier *= 0.7f;
-
+        
+        // Beregn endelig bevægelseshastighed
         Vector3 moveVelocity = slidingDirection * speed * speedModifier;
+        
+        // Anvend hastighed
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
     }
 
