@@ -189,6 +189,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50ead78eb22ea44af967408ee353faf9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dropSound: {fileID: 0}
+  shatterParticles: {fileID: 0}
 --- !u!1 &7226046169706427827
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,3 +257,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40c0c526d9bf542a59e24b3b8b396d93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  iceObject: {fileID: 2572611304672128060}
+  dropSound: {fileID: 0}
+  impactEffectPrefab: {fileID: 0}
