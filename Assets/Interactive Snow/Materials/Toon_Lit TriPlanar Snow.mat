@@ -1,0 +1,132 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Toon_Lit TriPlanar Snow
+  m_Shader: {fileID: 4800000, guid: 1cb5067a742d9384aa01940004f16be4, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlobalEffectRT:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: f5298939cc3df3740986fd10bb941a4e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTexBase:
+        m_Texture: {fileID: 2800000, guid: 2c4d62415f7d7654ebc94ce5ff0fdd57, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Mask:
+        m_Texture: {fileID: 2800000, guid: ae34b695b180a3c43a5e439f5070a1e2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MetallicMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 2800000, guid: 7c05e966fef446a48ba5758ef13f0c97, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: f6b2075c6de839d4786f58955d341414, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SparkleNoise:
+        m_Texture: {fileID: 2800000, guid: f3c7245690762d743a29ec73c1aeab38, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailBumpScale: 1
+    - _DstBlend: 0
+    - _Edgewidth: 0.0602
+    - _Fade: 0.98
+    - _MaxTessDistance: 82
+    - _Metallic: 0
+    - _NoiseScale: 0.069
+    - _NoiseWeight: 0.412
+    - _OcclusionStrength: 1
+    - _ParallaxStrength: 0
+    - _PathBlending: 0.286
+    - _RimPower: 3.9
+    - _Scale: 0.226
+    - _Smoothness: 0.1
+    - _SnowDepth: 0.67
+    - _SnowHeight: 0.253
+    - _SnowNormalStrength: 0.786
+    - _SnowTextureOpacity: 0.659
+    - _SnowTextureScale: 0.412
+    - _SparkCutoff: 0.769
+    - _SparkleScale: 1.85
+    - _SrcBlend: 1
+    - _Tess: 312
+    - _TessellationEdgeLength: 50
+    - _TessellationUniform: 1
+    - _WireframeSmoothing: 1
+    - _WireframeThickness: 1
+    - _ZWrite: 1
+    m_Colors:
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor2: {r: 0.5865967, g: 0.8613625, b: 0.9811321, a: 1}
+    - _Color: {r: 0.5283019, g: 0.5283019, b: 0.5283019, a: 1}
+    - _EdgeColor: {r: 0.120149516, g: 0.26003355, b: 0.33962262, a: 1}
+    - _Emission: {r: 0, g: 0, b: 0, a: 1}
+    - _MainCol: {r: 0.5028248, g: 0, b: 1, a: 1}
+    - _PathColor: {r: 0.16487186, g: 0.8342471, b: 0.8962264, a: 1}
+    - _PathColorIn: {r: 0, g: 0.22565085, b: 0.46107566, a: 1}
+    - _PathColorOut: {r: 0.12478626, g: 0.2911378, b: 0.5807128, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ShadowColor: {r: 0.090252765, g: 0.18257236, b: 1.2313062, a: 1}
+    - _ToonRamp: {r: 0.05549128, g: 0.16648202, b: 0.2735849, a: 1}
+    - _WireframeColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
