@@ -99,11 +99,13 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (moveDirection.magnitude >= 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-        }
+if (moveDirection.z != 0)
+{
+    Vector3 scale = transform.localScale;
+    scale.x = moveDirection.z > 0 ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
+    transform.localScale = scale;
+}
+
     }
 
     private void CheckGroundedAndSurface()

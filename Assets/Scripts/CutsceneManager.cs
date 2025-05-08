@@ -19,6 +19,8 @@ public class CutsceneManager : MonoBehaviour
     public TextMeshProUGUI continuePrompt;
     public TextMeshProUGUI dialogueText2;
     public TextMeshProUGUI dialogueText2g;
+
+    public CanvasGroup introUIPressE;
     
 
     [Header("Cameras")]
@@ -47,13 +49,22 @@ public class CutsceneManager : MonoBehaviour
 
     private bool cutsceneStarted = false;
 
-    
+    public GameObject windzone;
+
+    public GameObject plane;
 
 
 
     private void Start()
     {
+        player.GetComponent<CharacterMovement>().enabled = false;
+        player.GetComponent<Rigidbody>().isKinematic = true;
+
+        guidingLight.GetComponent<Rigidbody>().isKinematic = true;
+
+
         blackOverlay.gameObject.SetActive(false);
+        windzone.gameObject.SetActive(false);
     }
 
     public void StartCutscene()
@@ -103,6 +114,9 @@ public class CutsceneManager : MonoBehaviour
         
         dialogueText.gameObject.SetActive(true);
         continuePrompt.gameObject.SetActive(true);
+
+        windzone.gameObject.SetActive(true);
+        plane.gameObject.SetActive(false);
 
         foreach (string line in introDialogueLines)
         {
@@ -165,12 +179,17 @@ guidingLight.GetComponent<GuidingLightPath>().enabled = false;
 
 StartCoroutine(guidingLight.MoveToNextWaypoint());
 
-
+    yield return new WaitForSeconds(5f);
     sideCam.Priority = 20;
     guidingLightCam.Priority = 0;
 
+    player.GetComponent<Rigidbody>().isKinematic = false;
+    player.GetComponent<CharacterMovement>().enabled = true;
+
+StartCoroutine(FadeInAndOutIntroUIPressE());
 
 }
+
 
     IEnumerator MovePlayerAlongCutscenePath(Transform player)
 {
@@ -323,6 +342,38 @@ private readonly string[] guidingLightDialogueLines = new string[]
     "??? : I'll lead you home.",
     "Player : ...Okay."
 };
+IEnumerator FadeInAndOutIntroUIPressE()
+{
+    float duration = 1f;
+    float t = 0f;
+
+    // Fade in
+    introUIPressE.gameObject.SetActive(true);
+    introUIPressE.blocksRaycasts = true;
+
+    while (t < duration)
+    {
+        t += Time.deltaTime;
+        introUIPressE.alpha = Mathf.Lerp(0f, 1f, t / duration);
+        yield return null;
+    }
+
+    // Wait for 5 seconds
+    yield return new WaitForSeconds(10f);
+
+    // Fade out
+    t = 0f;
+    while (t < duration)
+    {
+        t += Time.deltaTime;
+        introUIPressE.alpha = Mathf.Lerp(1f, 0f, t / duration);
+        yield return null;
+    }
+
+    introUIPressE.blocksRaycasts = false;
+    introUIPressE.gameObject.SetActive(false); // Optional
+}
+
 
 
 
