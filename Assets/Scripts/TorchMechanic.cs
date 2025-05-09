@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using System.Linq;
+
 
 public class TorchMechanic : MonoBehaviour
 {
@@ -141,7 +143,9 @@ public void TorchPickup()
     // Save this torch's position as the new respawn point
 if (RespawnManager.Instance != null)
 {
-    Transform marker = transform.Find("RespawnPoint");
+    Transform marker = GetComponentsInChildren<Transform>(true)
+                   .FirstOrDefault(t => t.name == "RespawnPoint");
+
     Vector3 pos = marker != null ? marker.position : transform.position;
     RespawnManager.Instance.SetRespawnPoint(pos);
 }

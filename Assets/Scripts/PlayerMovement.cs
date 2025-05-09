@@ -239,6 +239,7 @@ private IEnumerator RespawnCoroutine()
 
     animator.SetTrigger("Respawning");
     rb.isKinematic = false;
+    canMove = false;
 
     while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
         yield return null;
