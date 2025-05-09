@@ -8,6 +8,8 @@ public class CutsceneManager : MonoBehaviour
 {
     public GameObject player;
 
+    public GameObject gameManager;
+
     [Header("Guiding Light")]
 
     [SerializeField] private GuidingLightController guidingLight;
@@ -69,6 +71,7 @@ public class CutsceneManager : MonoBehaviour
 
         blackOverlay.gameObject.SetActive(false);
         windzone.gameObject.SetActive(false);
+        gameManager.gameObject.SetActive(false);
     }
 
     public void StartCutscene()
@@ -196,7 +199,10 @@ StartCoroutine(guidingLight.MoveToNextWaypoint());
 
 
 
+
+
 StartCoroutine(FadeInAndOutIntroUIPressE());
+gameManager.gameObject.SetActive(true);
 
 }
 

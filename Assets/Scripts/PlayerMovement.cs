@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
@@ -66,54 +67,52 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-void FixedUpdate()
-{
-    if (!canMove || isPickingUpTorch) return;
-
-    float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
-    float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
-
-    Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
-    float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
-
-    // ✅ Dynamically toggle root motion based on input
-    bool hasInput = moveDirection.magnitude >= 0.1f;
-    animator.applyRootMotion = hasInput;
-
-    if (isInWindGust && windZone != null)
+    void FixedUpdate()
     {
-        float windMultiplier = isGrounded ? 2f : 4f;
-        rb.AddForce(windZone.transform.forward * -windMultiplier, ForceMode.Force);
+        if (!canMove || isPickingUpTorch) return;
 
-        if (!hasInput && isGrounded && !windAnimationTriggered)
+        float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
+        float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
+
+        Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
+        float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
+        
+        if (isInWindGust && windZone != null)
         {
-            animator.SetTrigger("Wind");
-            Debug.Log("Player hit by wind");
-            windAnimationTriggered = true;
-        }
-    }
-    else
-    {
-        if (isOnIce)
-        {
-            ApplyIceMovement(moveDirection, actualSpeed);
+            float windMultiplier = isGrounded ? 2f : 4f;
+            rb.AddForce(windZone.transform.forward * -windMultiplier, ForceMode.Force);
+
+            if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
+            {
+                animator.SetTrigger("Wind");
+                Debug.Log("Player hit by wind");
+                windAnimationTriggered = true;
+            }
         }
         else
         {
-            ApplyNormalMovement(moveDirection, actualSpeed);
+            if (isOnIce)
+            {
+                ApplyIceMovement(moveDirection, actualSpeed);
+            }
+            else
+            {
+                ApplyNormalMovement(moveDirection, actualSpeed);
+            }
         }
-    }
 
-    // 🔁 Smooth rotation
-    if (hasInput)
-    {
-        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-        Vector3 currentEuler = transform.rotation.eulerAngles;
-        float smoothY = Mathf.LerpAngle(currentEuler.y, targetRotation.eulerAngles.y, Time.deltaTime * 10f);
-        transform.rotation = Quaternion.Euler(0, smoothY, 0);
-    }
+if (moveDirection.magnitude >= 0.1f)
+{
+    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+    Debug.DrawRay(transform.position, moveDirection, Color.red);
+    Debug.Log("Rotating to: " + targetRotation.eulerAngles);
+    Debug.Log("Rotating toward: " + moveDirection);
+
+    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
 }
 
+
+    }
 
     private void CheckGroundedAndSurface()
     {
@@ -212,4 +211,52 @@ void FixedUpdate()
         isPickingUpTorch = false;
         rb.isKinematic = false;
     }
+
+    public void DieAndRespawn()
+{
+    StartCoroutine(RespawnCoroutine());
+}
+
+private IEnumerator RespawnCoroutine()
+{
+    canMove = false;
+    rb.velocity = Vector3.zero;
+    rb.isKinematic = true;
+
+    animator.SetTrigger("Dying");
+
+    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
+        yield return null;
+
+    while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+        yield return null;
+
+    Vector3 respawnPoint = RespawnManager.Instance != null
+        ? RespawnManager.Instance.GetRespawnPoint()
+        : transform.position;
+
+    transform.position = respawnPoint;
+
+    animator.SetTrigger("Respawning");
+    rb.isKinematic = false;
+
+    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
+        yield return null;
+
+    while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+        yield return null;
+
+    // Ensure Rigidbody is fully reset and active
+    rb.isKinematic = false;
+    rb.velocity = Vector3.zero;
+    rb.angularVelocity = Vector3.zero;
+    rb.WakeUp();
+
+    canMove = true;
+
+    Debug.Log("Player respawned.");
+}
+
+
+
 }

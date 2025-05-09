@@ -101,16 +101,55 @@ public class TorchMechanic : MonoBehaviour
                 Debug.Log("Torch faded out.");
             }
         }
+if (main.startSize.constant <= 0)
+{
+    main.startSize = 0;
+    torchParticles.Stop();
+    isLit = false;
+
+    Debug.Log("Torch faded out.");
+
+    if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+    {
+        GameObject player = GameObject.FindWithTag("Player");
+        if (player != null)
+        {
+            CharacterMovement movement = player.GetComponent<CharacterMovement>();
+            if (movement != null)
+            {
+                movement.DieAndRespawn();
+            }
+        }
+    }
+    else
+    {
+        Debug.Log("Torch faded, but no respawn point has been set yet.");
+    }
+}
+
+
+
     }
 
-    public void TorchPickup()
-    {
-        torchParticles.Play();  // Play the particles when the torch is lit
-        var main = torchParticles.main;
-        main.startSize = startSize;  // Reset the particle size to the start value
-        isLit = true;
-        Debug.Log("Torch re-lit");
-    }
+public void TorchPickup()
+{
+    torchParticles.Play();
+    var main = torchParticles.main;
+    main.startSize = startSize;
+    isLit = true;
+
+    // Save this torch's position as the new respawn point
+if (RespawnManager.Instance != null)
+{
+    Transform marker = transform.Find("RespawnPoint");
+    Vector3 pos = marker != null ? marker.position : transform.position;
+    RespawnManager.Instance.SetRespawnPoint(pos);
+}
+
+
+    Debug.Log("Torch re-lit and respawn point set.");
+}
+
 
     void OnTriggerEnter(Collider other)
     {
