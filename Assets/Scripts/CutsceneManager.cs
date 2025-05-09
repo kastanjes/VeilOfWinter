@@ -116,7 +116,9 @@ public class CutsceneManager : MonoBehaviour
         continuePrompt.gameObject.SetActive(true);
 
         windzone.gameObject.SetActive(true);
-        plane.gameObject.SetActive(false);
+        // plane.gameObject.SetActive(false);
+
+        RenderSettings.fogColor = new Color(0f / 255f, 1f / 255f, 25f / 255f);
 
         foreach (string line in introDialogueLines)
         {
