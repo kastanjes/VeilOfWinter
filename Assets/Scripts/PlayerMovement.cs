@@ -66,47 +66,54 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+void FixedUpdate()
+{
+    if (!canMove || isPickingUpTorch) return;
+
+    float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
+    float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
+
+    Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
+    float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
+
+    // ✅ Dynamically toggle root motion based on input
+    bool hasInput = moveDirection.magnitude >= 0.1f;
+    animator.applyRootMotion = hasInput;
+
+    if (isInWindGust && windZone != null)
     {
-        if (!canMove || isPickingUpTorch) return;
+        float windMultiplier = isGrounded ? 2f : 4f;
+        rb.AddForce(windZone.transform.forward * -windMultiplier, ForceMode.Force);
 
-        float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
-        float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
-
-        Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
-        float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
-        
-        if (isInWindGust && windZone != null)
+        if (!hasInput && isGrounded && !windAnimationTriggered)
         {
-            float windMultiplier = isGrounded ? 2f : 4f;
-            rb.AddForce(windZone.transform.forward * -windMultiplier, ForceMode.Force);
-
-            if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
-            {
-                animator.SetTrigger("Wind");
-                windAnimationTriggered = true;
-            }
+            animator.SetTrigger("Wind");
+            Debug.Log("Player hit by wind");
+            windAnimationTriggered = true;
+        }
+    }
+    else
+    {
+        if (isOnIce)
+        {
+            ApplyIceMovement(moveDirection, actualSpeed);
         }
         else
         {
-            if (isOnIce)
-            {
-                ApplyIceMovement(moveDirection, actualSpeed);
-            }
-            else
-            {
-                ApplyNormalMovement(moveDirection, actualSpeed);
-            }
+            ApplyNormalMovement(moveDirection, actualSpeed);
         }
+    }
 
-if (moveDirection.z != 0)
-{
-    Vector3 scale = transform.localScale;
-    scale.x = moveDirection.z > 0 ? Mathf.Abs(scale.x) : -Mathf.Abs(scale.x);
-    transform.localScale = scale;
+    // 🔁 Smooth rotation
+    if (hasInput)
+    {
+        Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+        Vector3 currentEuler = transform.rotation.eulerAngles;
+        float smoothY = Mathf.LerpAngle(currentEuler.y, targetRotation.eulerAngles.y, Time.deltaTime * 10f);
+        transform.rotation = Quaternion.Euler(0, smoothY, 0);
+    }
 }
 
-    }
 
     private void CheckGroundedAndSurface()
     {

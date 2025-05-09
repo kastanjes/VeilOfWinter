@@ -17151,12 +17151,11 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1120009455}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 37c19d7ba00b05249b7a67e5a14bc139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 822587486}
 --- !u!1 &1139251555
 GameObject:
   m_ObjectHideFlags: 0
@@ -18259,8 +18258,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   introTorch: {fileID: 3756355738318119012}
   playerTorch: {fileID: 1619819380}
-  finalPlayerPosition: {fileID: 0}
-  player: {fileID: 111128306}
 --- !u!1001 &1310143243
 PrefabInstance:
   m_ObjectHideFlags: 0

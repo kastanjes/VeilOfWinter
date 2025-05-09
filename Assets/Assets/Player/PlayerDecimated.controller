@@ -158,10 +158,10 @@ AnimatorStateMachine:
     m_Position: {x: 180, y: 230, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 716823595830513415}
-    m_Position: {x: 40, y: 310, z: 0}
+    m_Position: {x: -80, y: 230, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1399724136395207091}
-    m_Position: {x: -20, y: -30, z: 0}
+    m_Position: {x: -60, y: -30, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -613438921498831017}
     m_Position: {x: 210, y: -30, z: 0}
@@ -784,7 +784,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: StartGame
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -4752435121853048162}
   m_Solo: 0

@@ -7,6 +7,7 @@ using Cinemachine;
 public class CutsceneManager : MonoBehaviour
 {
     public GameObject player;
+
     [Header("Guiding Light")]
 
     [SerializeField] private GuidingLightController guidingLight;
@@ -53,10 +54,13 @@ public class CutsceneManager : MonoBehaviour
 
     public GameObject plane;
 
+    private Quaternion originalPlayerRotation;
+
 
 
     private void Start()
     {
+        originalPlayerRotation = player.transform.rotation;
         player.GetComponent<CharacterMovement>().enabled = false;
         player.GetComponent<Rigidbody>().isKinematic = true;
 
@@ -185,8 +189,12 @@ StartCoroutine(guidingLight.MoveToNextWaypoint());
     sideCam.Priority = 20;
     guidingLightCam.Priority = 0;
 
+
     player.GetComponent<Rigidbody>().isKinematic = false;
     player.GetComponent<CharacterMovement>().enabled = true;
+    playerAnimator.SetTrigger("StartGame");
+
+
 
 StartCoroutine(FadeInAndOutIntroUIPressE());
 
