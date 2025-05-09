@@ -91,7 +91,7 @@ Material:
     - _DstBlend: 0
     - _Edgewidth: 0.0602
     - _Fade: 0.98
-    - _MaxTessDistance: 82
+    - _MaxTessDistance: 10
     - _Metallic: 0
     - _NoiseScale: 0.069
     - _NoiseWeight: 0.412
@@ -109,7 +109,7 @@ Material:
     - _SparkCutoff: 0.769
     - _SparkleScale: 1.85
     - _SrcBlend: 1
-    - _Tess: 312
+    - _Tess: 1
     - _TessellationEdgeLength: 50
     - _TessellationUniform: 1
     - _WireframeSmoothing: 1

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: SparkleSnow
-  m_Shader: {fileID: -6465566751694194690, guid: d2501c8fbc2038046bde9fbcab296b1a, type: 3}
+  m_Shader: {fileID: 4800000, guid: d601afb742655b746945cf840bb0f75f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -48,11 +48,15 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: f5298939cc3df3740986fd10bb941a4e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Noise:
+        m_Texture: {fileID: 2800000, guid: 7c05e966fef446a48ba5758ef13f0c97, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -64,6 +68,10 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_14b5036b88e3468593c696438a667a10_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: f3c7245690762d743a29ec73c1aeab38, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SparkleNoise:
         m_Texture: {fileID: 2800000, guid: f3c7245690762d743a29ec73c1aeab38, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -102,24 +110,42 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _MaxTessDistance: 50
     - _Metallic: 0
+    - _NoiseScale: 0.1
+    - _NoiseWeight: 0.1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _PathBlending: 2
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _RimPower: 20
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _SnowHeight: 0.3
+    - _SnowPathStrength: 2
+    - _SnowTextureOpacity: 0.3
+    - _SnowTextureScale: 0.3
+    - _SparkCutoff: 0.8
+    - _SparkleIntensity: 4
+    - _SparkleScale: 10
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _Tess: 20
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _PathColorIn: {r: 1, g: 1, b: 1, a: 1}
+    - _PathColorOut: {r: 0.5, g: 0.5, b: 1, a: 1}
+    - _RimColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _ShadowColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    - _SparkleColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &4158402414286906215
