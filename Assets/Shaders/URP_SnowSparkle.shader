@@ -71,6 +71,8 @@ Shader "URP/SnowSparkleCustomizable"
             float _RimPower, _ShadowStrength;
             float _DetailOpacity, _DetailScale;
 
+            
+
             Varyings vert (Attributes IN)
             {
                 Varyings OUT;
@@ -92,6 +94,7 @@ Shader "URP/SnowSparkleCustomizable"
 
             float4 frag (Varyings IN) : SV_Target
             {
+                // Normal mapping
                 float3 normalMap = UnpackNormal(tex2D(_Normal, IN.uvWS * _SnowTextureScale));
                 float3 blendedNormal = normalize(
                     normalMap.r * IN.tangentWS +
@@ -100,11 +103,13 @@ Shader "URP/SnowSparkleCustomizable"
                 );
                 blendedNormal = normalize(lerp(IN.normalWS, blendedNormal, _SnowNormalStrength));
 
+                // Base snow texture
                 float3 baseTex = tex2D(_MainTex, IN.uvWS * _SnowTextureScale).rgb;
                 float3 detailTex = tex2D(_DetailTex, IN.uvWS * _DetailScale).rgb;
                 float3 baseSnow = lerp(_SnowColor.rgb, baseTex * _SnowColor.rgb, _SnowTextureOpacity);
                 baseSnow = lerp(baseSnow, detailTex * baseSnow, _DetailOpacity);
 
+                // Lighting
                 Light mainLight = GetMainLight();
                 float3 lightDir = normalize(mainLight.direction);
                 float NdotL = saturate(dot(blendedNormal, lightDir));
@@ -114,13 +119,18 @@ Shader "URP/SnowSparkleCustomizable"
                 float3 litColor = baseSnow * mainLight.color.rgb * NdotL * shadowAtten;
                 litColor = lerp(litColor, _ShadowTint.rgb, 1 - shadowAtten);
 
+                // Rim lighting
                 float rim = 1.0 - dot(IN.viewDirWS, blendedNormal);
                 float3 rimLight = _RimColor.rgb * pow(rim, _RimPower);
 
-                float sparkle = tex2D(_SparkleNoise, IN.uvWS * _SparkleScale).r;
+                // Sparkle animation
+                float2 sparkleUV = IN.uvWS * _SparkleScale + float2(_Time.x * 0.01, _Time.x * 0.03);
+                float sparkle = tex2D(_SparkleNoise, sparkleUV).r;
                 float sparkleMask = step(_SparkCutoff, sparkle);
-                float3 sparkleLight = sparkleMask * _SparkleIntensity;
+                float flicker = 0.4 + 0.5 * sin(_Time.x * 20.0 + sparkleUV.x * 10.0);
+                float3 sparkleLight = sparkleMask * _SparkleIntensity * flicker;
 
+                // Final color
                 float3 finalColor = litColor + rimLight + sparkleLight;
                 return float4(finalColor, 1.0);
             }

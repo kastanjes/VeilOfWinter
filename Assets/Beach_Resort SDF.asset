@@ -5209,17 +5209,17 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceTex:
-        m_Texture: {fileID: 2800000, guid: f25309d1a7f14406b874800c00071b8f, type: 3}
-        m_Scale: {x: 0.71, y: 0.46}
-        m_Offset: {x: 0.24, y: 0.3}
+        m_Texture: {fileID: 2800000, guid: 7c05e966fef446a48ba5758ef13f0c97, type: 3}
+        m_Scale: {x: 0.08, y: 0.06}
+        m_Offset: {x: -0.18, y: 0.3}
     - _MainTex:
         m_Texture: {fileID: 6528423310797117905}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OutlineTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
+        m_Texture: {fileID: 2800000, guid: c948ff4a46d9e134ab96d61acf2022ab, type: 3}
+        m_Scale: {x: 0.36, y: -0.72}
+        m_Offset: {x: 0.31, y: 0}
     m_Ints: []
     m_Floats:
     - _Ambient: 0.5
@@ -5235,7 +5235,7 @@ Material:
     - _Diffuse: 0.5
     - _FaceDilate: 0
     - _FaceUVSpeedX: 0
-    - _FaceUVSpeedY: 0
+    - _FaceUVSpeedY: 0.03
     - _GlowInner: 0.05
     - _GlowOffset: 0
     - _GlowOuter: 0.05
@@ -5244,10 +5244,10 @@ Material:
     - _LightAngle: 3.1416
     - _MaskSoftnessX: 0
     - _MaskSoftnessY: 0
-    - _OutlineSoftness: 0.08
+    - _OutlineSoftness: 0.06
     - _OutlineUVSpeedX: 0
-    - _OutlineUVSpeedY: 0
-    - _OutlineWidth: 0.04
+    - _OutlineUVSpeedY: 0.07
+    - _OutlineWidth: 0.08
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
     - _ScaleRatioA: 0.9
@@ -5279,7 +5279,7 @@ Material:
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
     - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 0.34042364, g: 0.36954337, b: 0.8490566, a: 1}
+    - _OutlineColor: {r: 0.4009434, g: 0.7576913, b: 1, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

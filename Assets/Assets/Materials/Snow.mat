@@ -156,7 +156,7 @@ Material:
     - _PathColorOut: {r: 0.4, g: 0.6, b: 1, a: 1}
     - _RimColor: {r: 0.15566038, g: 0.284455, b: 0.6226415, a: 1}
     - _ShadowTint: {r: 0.005079043, g: 0.004672482, b: 0.028301895, a: 1}
-    - _SnowColor: {r: 0.8243592, g: 0.87079173, b: 0.8962264, a: 1}
+    - _SnowColor: {r: 0.80740476, g: 0.86946094, b: 0.9056604, a: 1}
     - _SparkleColor: {r: 1, g: 1, b: 1, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
