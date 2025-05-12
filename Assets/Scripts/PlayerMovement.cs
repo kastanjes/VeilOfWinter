@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
 
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
@@ -25,6 +27,11 @@ public class CharacterMovement : MonoBehaviour
     public float iceSpeedMultiplier = 1.8f;
     public float iceSlideFactor = 0.95f;
     public string iceSurfaceTag = "Ice";
+    
+    [Header("UI")]
+    public CanvasGroup blackOverlay;
+    public float fadeDuration = 1f;
+
 
     private bool isGrounded;
     private bool jumpTriggered = false;
@@ -225,38 +232,74 @@ private IEnumerator RespawnCoroutine()
 
     animator.SetTrigger("Dying");
 
+    // Wait for Dying animation to start
     while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
         yield return null;
 
+    // Wait for Dying animation to finish
     while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
         yield return null;
 
+    // 🔲 Fade to black
+    yield return StartCoroutine(FadeBlackOverlay(true));
+
+    // Move to respawn point
     Vector3 respawnPoint = RespawnManager.Instance != null
         ? RespawnManager.Instance.GetRespawnPoint()
         : transform.position;
 
     transform.position = respawnPoint;
 
-    animator.SetTrigger("Respawning");
-    rb.isKinematic = false;
-    canMove = false;
+    // 🔲 Fade back in
+    yield return StartCoroutine(FadeBlackOverlay(false));
 
+    // ▶️ Play respawn animation now that screen is visible
+    animator.SetTrigger("Respawning");
+
+    // Wait for animation to start
     while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
         yield return null;
 
+    // Wait for animation to finish
     while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
         yield return null;
 
-    // Ensure Rigidbody is fully reset and active
+    // Final reset
     rb.isKinematic = false;
     rb.velocity = Vector3.zero;
     rb.angularVelocity = Vector3.zero;
     rb.WakeUp();
-
     canMove = true;
 
     Debug.Log("Player respawned.");
 }
+
+
+private IEnumerator FadeBlackOverlay(bool fadeIn)
+{
+    float t = 0f;
+    float startAlpha = blackOverlay.alpha;
+    float targetAlpha = fadeIn ? 1f : 0f;
+
+    // Make sure it's visible before fading
+    blackOverlay.gameObject.SetActive(true);
+
+    while (t < fadeDuration)
+    {
+        t += Time.deltaTime;
+        float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
+        blackOverlay.alpha = alpha;
+        yield return null;
+    }
+
+    blackOverlay.alpha = targetAlpha;
+
+    if (!fadeIn)
+    {
+        blackOverlay.gameObject.SetActive(false);
+    }
+}
+
 
 
 

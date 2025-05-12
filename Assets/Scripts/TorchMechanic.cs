@@ -2,12 +2,11 @@ using System.Collections;
 using UnityEngine;
 using System.Linq;
 
-
 public class TorchMechanic : MonoBehaviour
 {
-    public ParticleSystem torchParticles;  // Reference to the Particle System
-    public float startSize;               // Starting size of the particles
-    public int fadeTime = 10;             // Time to fade out the particles
+    public ParticleSystem[] torchParticles; // Array of 3 particle systems
+    public float startSize = 1f;
+    public int fadeTime = 10;
 
     private bool isLit = true;
     private float fadeRate;
@@ -18,11 +17,14 @@ public class TorchMechanic : MonoBehaviour
 
     void Start()
     {
-        if (torchParticles == null)
-            torchParticles = GetComponent<ParticleSystem>();  // Get the Particle System attached to the GameObject
+        if (torchParticles == null || torchParticles.Length == 0)
+        {
+            torchParticles = GetComponentsInChildren<ParticleSystem>();
+        }
 
-        var main = torchParticles.main;
-        startSize = main.startSize.constant;  // Get the starting size of the particles
+        // Use the first system as reference
+        var main = torchParticles[0].main;
+        startSize = main.startSize.constant;
         fadeRate = startSize / fadeTime;
     }
 
@@ -55,7 +57,7 @@ public class TorchMechanic : MonoBehaviour
             if (movement != null)
             {
                 movement.canMove = false;
-                movement.StartTorchPickup(); // <<< THIS makes the Rigidbody kinematic
+                movement.StartTorchPickup();
             }
 
             if (animator != null)
@@ -72,13 +74,13 @@ public class TorchMechanic : MonoBehaviour
             {
                 Destroy(torchInRange);
                 torchInRange = null;
-                canPickupTorch = false; // <<< Add this line
+                canPickupTorch = false;
             }
 
             if (movement != null)
             {
                 movement.canMove = true;
-                movement.EndTorchPickup(); // <<< THIS restores the Rigidbody to normal
+                movement.EndTorchPickup();
             }
 
             Debug.Log("Torch pickup complete.");
@@ -89,71 +91,64 @@ public class TorchMechanic : MonoBehaviour
 
     public void Fading()
     {
-        var main = torchParticles.main;
+        var main = torchParticles[0].main;
 
         if (main.startSize.constant > 0)
         {
-            main.startSize = Mathf.Max(0, main.startSize.constant - fadeRate * Time.deltaTime);
+            float newSize = Mathf.Max(0, main.startSize.constant - fadeRate * Time.deltaTime);
 
-            if (main.startSize.constant <= 0)
+            foreach (var ps in torchParticles)
             {
-                main.startSize = 0;
-                torchParticles.Stop();
+                var m = ps.main;
+                m.startSize = newSize;
+                if (newSize <= 0) ps.Stop();
+            }
+
+            if (newSize <= 0)
+            {
                 isLit = false;
                 Debug.Log("Torch faded out.");
+
+                if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+                {
+                    GameObject player = GameObject.FindWithTag("Player");
+                    if (player != null)
+                    {
+                        var movement = player.GetComponent<CharacterMovement>();
+                        if (movement != null) movement.DieAndRespawn();
+                    }
+                }
+                else
+                {
+                    Debug.Log("Torch faded, but no respawn point has been set yet.");
+                }
             }
         }
-if (main.startSize.constant <= 0)
-{
-    main.startSize = 0;
-    torchParticles.Stop();
-    isLit = false;
+    }
 
-    Debug.Log("Torch faded out.");
-
-    if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+    public void TorchPickup()
     {
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player != null)
+        foreach (var ps in torchParticles)
         {
-            CharacterMovement movement = player.GetComponent<CharacterMovement>();
-            if (movement != null)
-            {
-                movement.DieAndRespawn();
-            }
+            ps.Play();
+            var m = ps.main;
+            m.startSize = startSize;
         }
+
+        isLit = true;
+
+        if (RespawnManager.Instance != null)
+        {
+            Transform marker = GetComponentsInChildren<Transform>(true)
+                .FirstOrDefault(t => t.name == "RespawnPoint");
+
+            Vector3 target = marker != null ? marker.position : transform.position;
+            Vector3 groundedPosition = RaycastToGround(target);
+            RespawnManager.Instance.SetRespawnPoint(groundedPosition);
+        }
+
+        Debug.Log("Torch re-lit and respawn point set.");
     }
-    else
-    {
-        Debug.Log("Torch faded, but no respawn point has been set yet.");
-    }
-}
-
-
-
-    }
-
-public void TorchPickup()
-{
-    torchParticles.Play();
-    var main = torchParticles.main;
-    main.startSize = startSize;
-    isLit = true;
-
-    // Save this torch's position as the new respawn point
-if (RespawnManager.Instance != null)
-{
-    Transform marker = GetComponentsInChildren<Transform>(true)
-                   .FirstOrDefault(t => t.name == "RespawnPoint");
-
-    Vector3 pos = marker != null ? marker.position : transform.position;
-    RespawnManager.Instance.SetRespawnPoint(pos);
-}
-
-
-    Debug.Log("Torch re-lit and respawn point set.");
-}
-
 
     void OnTriggerEnter(Collider other)
     {
@@ -173,5 +168,22 @@ if (RespawnManager.Instance != null)
             torchInRange = null;
             Debug.Log("Left collectable torch range.");
         }
+    }
+
+    private Vector3 RaycastToGround(Vector3 origin)
+    {
+        int groundLayerMask = LayerMask.GetMask("Ground");
+        Ray ray = new Ray(origin + Vector3.up * 1f, Vector3.down);
+
+        if (Physics.Raycast(ray, out RaycastHit hitInfo, 5f, groundLayerMask))
+        {
+            if (hitInfo.collider.CompareTag("Ground"))
+            {
+                return hitInfo.point;
+            }
+        }
+
+        Debug.LogWarning("No valid ground hit for respawn. Falling back to torch position.");
+        return origin;
     }
 }
