@@ -77,6 +77,8 @@ public class CharacterMovement : MonoBehaviour
     void FixedUpdate()
     {
         if (!canMove || isPickingUpTorch) return;
+        Debug.Log($"canMove={canMove}, velocity={rb.velocity}, grounded={isGrounded}");
+
 
         float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
         float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
@@ -250,8 +252,10 @@ private IEnumerator RespawnCoroutine()
 
     transform.position = respawnPoint;
 
-    // 🔲 Fade back in
-    yield return StartCoroutine(FadeBlackOverlay(false));
+// 🔲 Fade back in
+yield return StartCoroutine(FadeBlackOverlay(false));
+yield return new WaitForSeconds(1f); // Small delay before trigger
+
 
     // ▶️ Play respawn animation now that screen is visible
     animator.SetTrigger("Respawning");
@@ -264,14 +268,24 @@ private IEnumerator RespawnCoroutine()
     while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
         yield return null;
 
-    // Final reset
-    rb.isKinematic = false;
-    rb.velocity = Vector3.zero;
-    rb.angularVelocity = Vector3.zero;
-    rb.WakeUp();
-    canMove = true;
+transform.position = respawnPoint + Vector3.up * 0.1f;
+rb.isKinematic = false;
+rb.velocity = Vector3.zero;
+rb.angularVelocity = Vector3.zero;
+yield return null;
+canMove = true;
 
-    Debug.Log("Player respawned.");
+rb.WakeUp();
+
+
+animator.applyRootMotion = true; // ✅ Ensure root motion is re-enabled if used
+canMove = true;
+rb.velocity = transform.forward * 1f;
+
+animator.applyRootMotion = false;
+
+Debug.Log("Player respawned.");
+
 }
 
 

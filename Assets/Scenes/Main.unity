@@ -7553,15 +7553,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.313
+      value: -0.774
       objectReference: {fileID: 0}
     - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.18
+      value: 0.215
       objectReference: {fileID: 0}
     - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.024
+      value: -0.252
       objectReference: {fileID: 0}
     - target: {fileID: 4020293709427081145, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_IsActive
@@ -26977,6 +26977,7 @@ MonoBehaviour:
     clip: {fileID: 0}
     volume: 0
     pitch: 0
+    loop: 0
     source: {fileID: 0}
 --- !u!4 &2024088899
 Transform:
@@ -34645,6 +34646,18 @@ PrefabInstance:
     - target: {fileID: 2663874768749782207, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_Name
       value: Collectable torch
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.587
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.151
+      objectReference: {fileID: 0}
+    - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
