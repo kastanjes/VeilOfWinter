@@ -5634,7 +5634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4908607520854369086, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33820,6 +33820,10 @@ PrefabInstance:
       propertyPath: playerTorchParticles
       value: 
       objectReference: {fileID: 2033277462}
+    - target: {fileID: 1157975943547275185, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
+      propertyPath: windBlockerLayer.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 1853152216809124704, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.9918522
@@ -34107,6 +34111,18 @@ PrefabInstance:
     - target: {fileID: 8196255030539020731, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -54.13849
+      objectReference: {fileID: 0}
+    - target: {fileID: 8626690025869230171, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.001
+      objectReference: {fileID: 0}
+    - target: {fileID: 8626690025869230171, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.011
+      objectReference: {fileID: 0}
+    - target: {fileID: 8626690025869230171, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 8964242561255211595, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -35817,6 +35833,10 @@ PrefabInstance:
     - target: {fileID: 5676170468258001146, guid: 17ab679c53afeda4f92308a4fd854242, type: 3}
       propertyPath: m_Name
       value: TreeZ4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5676170468258001146, guid: 17ab679c53afeda4f92308a4fd854242, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

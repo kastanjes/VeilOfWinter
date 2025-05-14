@@ -22,6 +22,9 @@ public class CharacterMovement : MonoBehaviour
     [Header("Wind Settings")]
     public float windBackwardsForce = 15f;
     public float forwardJumpForceReduction = 0.7f;
+    // Nye variabler for crouch
+    public bool canCrouch = true;
+    public float crouchWindResistance = 0.05f; // Kun 5% vindpåvirkning når crouched
 
     [Header("Ice Settings")]
     public float iceSpeedMultiplier = 1.8f;
@@ -40,6 +43,7 @@ public class CharacterMovement : MonoBehaviour
     private bool windAnimationTriggered = false;
     private WindZone windZone;
     private Vector3 slidingDirection;
+    private bool isCrouching = false; // Crouch-tilstand
 
     private bool isPickingUpTorch = false;
 
@@ -67,8 +71,22 @@ public class CharacterMovement : MonoBehaviour
         if (!isInWindGust)
             windAnimationTriggered = false;
 
-        // Jump
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !jumpTriggered)
+        // Crouch håndtering med korrekt animation parameter
+        if (Input.GetKeyDown(KeyCode.LeftControl) && canCrouch && isGrounded)
+        {
+            isCrouching = true;
+            animator.SetBool("IsCrouching", true);
+            Debug.Log("CROUCH AKTIVERET");
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftControl) && canCrouch)
+        {
+            isCrouching = false;
+            animator.SetBool("IsCrouching", false);
+            Debug.Log("CROUCH DEAKTIVERET");
+        }
+
+        // Jump - kan ikke hoppe mens crouched
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !jumpTriggered && !isCrouching)
         {
             HandleJumping();
         }
@@ -86,16 +104,37 @@ public class CharacterMovement : MonoBehaviour
         Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
         float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
         
+        // Helt ny vindlogik med stærk reduktion for crouch
         if (isInWindGust && windZone != null)
         {
-            float windMultiplier = isGrounded ? 2f : 4f;
-            rb.AddForce(windZone.transform.forward * -windMultiplier, ForceMode.Force);
-
-            if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
+            // Drastisk reduktion af vindkraft når crouched
+            if (isCrouching && isGrounded)
             {
-                animator.SetTrigger("Wind");
-                Debug.Log("Player hit by wind");
-                windAnimationTriggered = true;
+                // Næsten ingen vindpåvirkning når crouched
+                float crouchedWindForce = crouchWindResistance; // Meget lav værdi
+                
+                // Anvend minimal vindkraft
+                rb.AddForce(windZone.transform.forward * -crouchedWindForce, ForceMode.Force);
+                Debug.Log("CROUCH VINDMODSTAND: Kraft reduceret til " + crouchedWindForce);
+                
+                // Ingen vindanimation ved crouch
+                windAnimationTriggered = false;
+            }
+            else
+            {
+                // Normal vindkraft når ikke crouched
+                float normalWindForce = isGrounded ? 2f : 4f;
+                
+                // Anvend normal vindkraft
+                rb.AddForce(windZone.transform.forward * -normalWindForce, ForceMode.Force);
+                
+                // Vis kun wind animation hvis ikke crouched
+                if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
+                {
+                    animator.SetTrigger("Wind");
+                    Debug.Log("Player hit by wind");
+                    windAnimationTriggered = true;
+                }
             }
         }
         else
@@ -110,17 +149,15 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-if (moveDirection.magnitude >= 0.1f)
-{
-    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-    Debug.DrawRay(transform.position, moveDirection, Color.red);
-    Debug.Log("Rotating to: " + targetRotation.eulerAngles);
-    Debug.Log("Rotating toward: " + moveDirection);
+        if (moveDirection.magnitude >= 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            Debug.DrawRay(transform.position, moveDirection, Color.red);
+            Debug.Log("Rotating to: " + targetRotation.eulerAngles);
+            Debug.Log("Rotating toward: " + moveDirection);
 
-    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-}
-
-
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        }
     }
 
     private void CheckGroundedAndSurface()
@@ -178,6 +215,10 @@ if (moveDirection.magnitude >= 0.1f)
 
     private void ApplyNormalMovement(Vector3 moveDirection, float speed)
     {
+        // Reducér hastigheden når crouched
+        if (isCrouching)
+            speed *= 0.5f; // Halv hastighed mens crouched
+            
         Vector3 moveVelocity = moveDirection * speed;
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
         slidingDirection = Vector3.zero;
@@ -185,6 +226,10 @@ if (moveDirection.magnitude >= 0.1f)
 
     private void ApplyIceMovement(Vector3 moveDirection, float speed)
     {
+        // Reducér hastigheden når crouched (også på is)
+        if (isCrouching)
+            speed *= 0.5f;
+            
         if (moveDirection.magnitude > 0.1f)
         {
             // Gradvis ændring af glidningsretning baseret på input
@@ -222,99 +267,94 @@ if (moveDirection.magnitude >= 0.1f)
     }
 
     public void DieAndRespawn()
-{
-    StartCoroutine(RespawnCoroutine());
-}
-
-private IEnumerator RespawnCoroutine()
-{
-    canMove = false;
-    rb.velocity = Vector3.zero;
-    rb.isKinematic = true;
-
-    animator.SetTrigger("Dying");
-
-    // Wait for Dying animation to start
-    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
-        yield return null;
-
-    // Wait for Dying animation to finish
-    while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-        yield return null;
-
-    // 🔲 Fade to black
-    yield return StartCoroutine(FadeBlackOverlay(true));
-
-    // Move to respawn point
-    Vector3 respawnPoint = RespawnManager.Instance != null
-        ? RespawnManager.Instance.GetRespawnPoint()
-        : transform.position;
-
-    transform.position = respawnPoint;
-
-// 🔲 Fade back in
-yield return StartCoroutine(FadeBlackOverlay(false));
-yield return new WaitForSeconds(1f); // Small delay before trigger
-
-
-    // ▶️ Play respawn animation now that screen is visible
-    animator.SetTrigger("Respawning");
-
-    // Wait for animation to start
-    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
-        yield return null;
-
-    // Wait for animation to finish
-    while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-        yield return null;
-
-transform.position = respawnPoint + Vector3.up * 0.1f;
-rb.isKinematic = false;
-rb.velocity = Vector3.zero;
-rb.angularVelocity = Vector3.zero;
-yield return null;
-canMove = true;
-
-rb.WakeUp();
-
-
-animator.applyRootMotion = true; // ✅ Ensure root motion is re-enabled if used
-canMove = true;
-rb.velocity = transform.forward * 1f;
-
-animator.applyRootMotion = false;
-
-Debug.Log("Player respawned.");
-
-}
-
-
-private IEnumerator FadeBlackOverlay(bool fadeIn)
-{
-    float t = 0f;
-    float startAlpha = blackOverlay.alpha;
-    float targetAlpha = fadeIn ? 1f : 0f;
-
-    // Make sure it's visible before fading
-    blackOverlay.gameObject.SetActive(true);
-
-    while (t < fadeDuration)
     {
-        t += Time.deltaTime;
-        float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
-        blackOverlay.alpha = alpha;
-        yield return null;
+        StartCoroutine(RespawnCoroutine());
     }
 
-    blackOverlay.alpha = targetAlpha;
-
-    if (!fadeIn)
+    private IEnumerator RespawnCoroutine()
     {
-        blackOverlay.gameObject.SetActive(false);
+        canMove = false;
+        rb.velocity = Vector3.zero;
+        rb.isKinematic = true;
+
+        animator.SetTrigger("Dying");
+
+        // Wait for Dying animation to start
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
+            yield return null;
+
+        // Wait for Dying animation to finish
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+            yield return null;
+
+        // 🔲 Fade to black
+        yield return StartCoroutine(FadeBlackOverlay(true));
+
+        // Move to respawn point
+        Vector3 respawnPoint = RespawnManager.Instance != null
+            ? RespawnManager.Instance.GetRespawnPoint()
+            : transform.position;
+
+        transform.position = respawnPoint;
+
+        // 🔲 Fade back in
+        yield return StartCoroutine(FadeBlackOverlay(false));
+        yield return new WaitForSeconds(1f); // Small delay before trigger
+
+
+        // ▶️ Play respawn animation now that screen is visible
+        animator.SetTrigger("Respawning");
+
+        // Wait for animation to start
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
+            yield return null;
+
+        // Wait for animation to finish
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+            yield return null;
+
+        transform.position = respawnPoint + Vector3.up * 0.1f;
+        rb.isKinematic = false;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        yield return null;
+        canMove = true;
+
+        rb.WakeUp();
+
+
+        animator.applyRootMotion = true; // ✅ Ensure root motion is re-enabled if used
+        canMove = true;
+        rb.velocity = transform.forward * 1f;
+
+        animator.applyRootMotion = false;
+
+        Debug.Log("Player respawned.");
     }
-}
 
 
+    private IEnumerator FadeBlackOverlay(bool fadeIn)
+    {
+        float t = 0f;
+        float startAlpha = blackOverlay.alpha;
+        float targetAlpha = fadeIn ? 1f : 0f;
 
+        // Make sure it's visible before fading
+        blackOverlay.gameObject.SetActive(true);
 
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
+            blackOverlay.alpha = alpha;
+            yield return null;
+        }
+
+        blackOverlay.alpha = targetAlpha;
+
+        if (!fadeIn)
+        {
+            blackOverlay.gameObject.SetActive(false);
+        }
+    }
 }
