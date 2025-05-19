@@ -273,9 +273,10 @@ public class CharacterMovement : MonoBehaviour
 
     private IEnumerator RespawnCoroutine()
     {
-        canMove = false;
-        rb.velocity = Vector3.zero;
+   
         rb.isKinematic = true;
+        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+
 
         animator.SetTrigger("Dying");
 
@@ -297,6 +298,27 @@ public class CharacterMovement : MonoBehaviour
 
         transform.position = respawnPoint;
 
+        rb.isKinematic = false;
+        rb.constraints &= ~(
+            RigidbodyConstraints.FreezePositionX |
+            RigidbodyConstraints.FreezePositionY |
+            RigidbodyConstraints.FreezePositionZ
+        );
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
+        if (torch != null)
+        {
+            torch.ReactivateTorchParticles();
+        }
+TorchVignette vignette = FindObjectOfType<TorchVignette>();
+if (vignette != null)
+{
+    vignette.ResetVignette();
+}
+
+
+
         // 🔲 Fade back in
         yield return StartCoroutine(FadeBlackOverlay(false));
         yield return new WaitForSeconds(1f); // Small delay before trigger
@@ -313,21 +335,14 @@ public class CharacterMovement : MonoBehaviour
         while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
             yield return null;
 
-        transform.position = respawnPoint + Vector3.up * 0.1f;
-        rb.isKinematic = false;
-        rb.velocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        transform.position = respawnPoint + Vector3.up * 0.5f;
+
+       // rb.velocity = Vector3.zero;
+        // rb.angularVelocity = Vector3.zero;
         yield return null;
-        canMove = true;
-
-        rb.WakeUp();
 
 
-        animator.applyRootMotion = true; // ✅ Ensure root motion is re-enabled if used
-        canMove = true;
-        rb.velocity = transform.forward * 1f;
 
-        animator.applyRootMotion = false;
 
         Debug.Log("Player respawned.");
     }

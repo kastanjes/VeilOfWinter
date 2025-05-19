@@ -128,6 +128,12 @@ public class TorchMechanic : MonoBehaviour
 
     public void TorchPickup()
     {
+        TorchVignette vignette = FindObjectOfType<TorchVignette>();
+        if (vignette != null)
+        {
+            vignette.StartVignetteScaling(fadeTime);
+        }
+
         foreach (var ps in torchParticles)
         {
             ps.Play();
@@ -137,18 +143,27 @@ public class TorchMechanic : MonoBehaviour
 
         isLit = true;
 
-        if (RespawnManager.Instance != null)
+        if (RespawnManager.Instance != null && torchInRange != null)
         {
-            Transform marker = GetComponentsInChildren<Transform>(true)
-                .FirstOrDefault(t => t.name == "RespawnPoint");
+            // 🔧 Get the RespawnPoint inside the picked-up torch
+            Transform marker = torchInRange.transform.Find("RespawnPoint");
+            if (marker == null)
+            {
+                // Try a deep search just in case
+                marker = torchInRange.GetComponentsInChildren<Transform>(true)
+                    .FirstOrDefault(t => t.name == "RespawnPoint");
+            }
 
-            Vector3 target = marker != null ? marker.position : transform.position;
+            Vector3 target = marker != null ? marker.position : torchInRange.transform.position;
             Vector3 groundedPosition = RaycastToGround(target);
             RespawnManager.Instance.SetRespawnPoint(groundedPosition);
+
+            Debug.Log($"Respawn point set to: {groundedPosition}");
         }
 
         Debug.Log("Torch re-lit and respawn point set.");
     }
+
 
     void OnTriggerEnter(Collider other)
     {
@@ -186,4 +201,18 @@ public class TorchMechanic : MonoBehaviour
         Debug.LogWarning("No valid ground hit for respawn. Falling back to torch position.");
         return origin;
     }
+    
+    public void ReactivateTorchParticles()
+{
+    foreach (var ps in torchParticles)
+    {
+        ps.Play();
+        var m = ps.main;
+        m.startSize = startSize;
+    }
+
+    isLit = true;
+    Debug.Log("Torch particles reactivated after respawn.");
+}
+
 }
