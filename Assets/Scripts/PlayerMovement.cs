@@ -10,6 +10,9 @@ public class CharacterMovement : MonoBehaviour
     Rigidbody rb;
     CharacterAnimation characterAnimation;
 
+    // Erstat AudioManager referencer med AudioSource
+    [SerializeField] private AudioSource footstepsAudioSource;
+
     [Header("Movement Settings")]
     public bool canMove = true;
     public float maxMoveSpeed = 5f;
@@ -55,6 +58,23 @@ public class CharacterMovement : MonoBehaviour
         
         windZone = FindObjectOfType<WindZone>();
         slidingDirection = Vector3.zero;
+
+        // Tjek om AudioSource er tildelt
+        if (footstepsAudioSource == null)
+        {
+            Debug.LogError("Footsteps AudioSource er ikke tildelt! Tilføj en AudioSource komponent til spilleren og træk den til dette felt i inspektoren.");
+            // Forsøg at finde eller tilføje en
+            footstepsAudioSource = GetComponent<AudioSource>();
+            if (footstepsAudioSource == null)
+            {
+                footstepsAudioSource = gameObject.AddComponent<AudioSource>();
+                Debug.Log("AudioSource automatisk tilføjet til spilleren.");
+            }
+        }
+        
+        // Sørg for at AudioSource er konfigureret korrekt
+        footstepsAudioSource.loop = true;
+        footstepsAudioSource.playOnAwake = false;
     }
 
     void Update()
@@ -146,6 +166,28 @@ public class CharacterMovement : MonoBehaviour
             else
             {
                 ApplyNormalMovement(moveDirection, actualSpeed);
+            }
+        }
+
+        // NY FODTRIN LOGIK - mere direkte kontrol
+        bool hasMovementInput = moveDirection.magnitude > 0.1f;
+        bool shouldPlayFootsteps = isGrounded && !jumpTriggered && hasMovementInput && !isPickingUpTorch && !isOnIce && !isCrouching;
+
+        // Kontrollerer fodtrinslyd baseret på bevægelse
+        if (shouldPlayFootsteps)
+        {
+            if (!footstepsAudioSource.isPlaying)
+            {
+                footstepsAudioSource.Play();
+                Debug.Log("Fodtrin starter");
+            }
+        }
+        else
+        {
+            if (footstepsAudioSource.isPlaying)
+            {
+                footstepsAudioSource.Stop();
+                Debug.Log("Fodtrin stopper");
             }
         }
 
