@@ -50,6 +50,10 @@ public class CharacterMovement : MonoBehaviour
 
     private bool isPickingUpTorch = false;
 
+    private bool wasMovingLastFrame = false;
+private Quaternion lastRotationBeforeStop;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -123,7 +127,7 @@ public class CharacterMovement : MonoBehaviour
 
         Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
         float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
-        
+
         // Helt ny vindlogik med stærk reduktion for crouch
         if (isInWindGust && windZone != null)
         {
@@ -132,11 +136,11 @@ public class CharacterMovement : MonoBehaviour
             {
                 // Næsten ingen vindpåvirkning når crouched
                 float crouchedWindForce = crouchWindResistance; // Meget lav værdi
-                
+
                 // Anvend minimal vindkraft
                 rb.AddForce(windZone.transform.forward * -crouchedWindForce, ForceMode.Force);
                 Debug.Log("CROUCH VINDMODSTAND: Kraft reduceret til " + crouchedWindForce);
-                
+
                 // Ingen vindanimation ved crouch
                 windAnimationTriggered = false;
             }
@@ -144,14 +148,14 @@ public class CharacterMovement : MonoBehaviour
             {
                 // Normal vindkraft når ikke crouched
                 float normalWindForce = isGrounded ? 2f : 4f;
-                
+
                 // Anvend normal vindkraft
                 rb.AddForce(windZone.transform.forward * -normalWindForce, ForceMode.Force);
-                
+
                 // Vis kun wind animation hvis ikke crouched
                 if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
                 {
-                    animator.SetTrigger("Wind");
+                    // animator.SetTrigger("Wind");
                     Debug.Log("Player hit by wind");
                     windAnimationTriggered = true;
                 }
@@ -191,15 +195,31 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        if (moveDirection.magnitude >= 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-            Debug.DrawRay(transform.position, moveDirection, Color.red);
-            Debug.Log("Rotating to: " + targetRotation.eulerAngles);
-            Debug.Log("Rotating toward: " + moveDirection);
+bool isCurrentlyMoving = moveDirection.magnitude >= 0.1f;
 
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-        }
+if (isCurrentlyMoving)
+{
+    // Rotation while moving
+    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+
+    wasMovingLastFrame = true;
+}
+else
+{
+    // Just stopped moving
+    if (wasMovingLastFrame)
+    {
+        lastRotationBeforeStop = transform.rotation;
+        wasMovingLastFrame = false;
+    }
+
+    // Keep last facing direction
+    transform.rotation = lastRotationBeforeStop;
+}
+
+        
+        
     }
 
     private void CheckGroundedAndSurface()

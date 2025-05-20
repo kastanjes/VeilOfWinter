@@ -11266,6 +11266,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.0005
       objectReference: {fileID: 0}
+    - target: {fileID: 1256838367152725616, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2663874768749782207, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_Name
       value: Collectable torch (1)
@@ -11285,6 +11289,10 @@ PrefabInstance:
     - target: {fileID: 4020293709427081145, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5972356095173138267, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_Radius
+      value: 0.14
       objectReference: {fileID: 0}
     - target: {fileID: 6159920754110223502, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_Name
@@ -60259,21 +60267,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 19.561996
       objectReference: {fileID: 0}
+    - target: {fileID: 1256838367152725616, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2663874768749782207, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
       propertyPath: m_Name
       value: Collectable torch
       objectReference: {fileID: 0}
-    - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.587
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.151
-      objectReference: {fileID: 0}
-    - target: {fileID: 3380553303335461587, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.1
+    - target: {fileID: 5972356095173138267, guid: 884cb986145770146a1436cff6bc5c57, type: 3}
+      propertyPath: m_Radius
+      value: 0.17
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
