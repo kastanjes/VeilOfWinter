@@ -15,6 +15,10 @@ public class TorchMechanic : MonoBehaviour
     private GameObject torchInRange;
     private bool isPickingUp = false;
 
+    public GameObject objectToDisableOnFirstLight; // Assign in inspector
+private static bool torchLitOnce = false; // Tracks if it's the first time
+
+
     void Start()
     {
         if (torchParticles == null || torchParticles.Length == 0)
@@ -109,19 +113,21 @@ public class TorchMechanic : MonoBehaviour
                 isLit = false;
                 Debug.Log("Torch faded out.");
 
-                if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+            if (EndSceneTrigger.playerEnteredEndZone)
+            {
+                Debug.Log("Torch faded out in end zone. Loading end cutscene scene...");
+                SceneLoader.Instance.LoadScene("EndScene"); // ✅ change scene name if needed
+            }
+            else if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+            {
+                GameObject player = GameObject.FindWithTag("Player");
+                if (player != null)
                 {
-                    GameObject player = GameObject.FindWithTag("Player");
-                    if (player != null)
-                    {
-                        var movement = player.GetComponent<CharacterMovement>();
-                        if (movement != null) movement.DieAndRespawn();
-                    }
+                    var movement = player.GetComponent<CharacterMovement>();
+                    if (movement != null) movement.DieAndRespawn();
                 }
-                else
-                {
-                    Debug.Log("Torch faded, but no respawn point has been set yet.");
-                }
+            }
+
             }
         }
     }
@@ -142,6 +148,17 @@ public class TorchMechanic : MonoBehaviour
         }
 
         isLit = true;
+        if (!torchLitOnce)
+{
+    torchLitOnce = true;
+
+    if (objectToDisableOnFirstLight != null)
+    {
+        objectToDisableOnFirstLight.SetActive(false);
+        Debug.Log("Disabled first-time object after relighting torch.");
+    }
+}
+
 
         if (RespawnManager.Instance != null && torchInRange != null)
         {

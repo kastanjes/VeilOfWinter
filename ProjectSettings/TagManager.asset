@@ -8,6 +8,7 @@ TagManager:
   - Ice
   - Ground
   - CollectableTorch
+  - Icicle
   layers:
   - Default
   - TransparentFX

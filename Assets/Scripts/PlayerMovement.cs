@@ -33,7 +33,7 @@ public class CharacterMovement : MonoBehaviour
     public float iceSpeedMultiplier = 1.8f;
     public float iceSlideFactor = 0.95f;
     public string iceSurfaceTag = "Ice";
-    
+
     [Header("UI")]
     public CanvasGroup blackOverlay;
     public float fadeDuration = 1f;
@@ -51,7 +51,7 @@ public class CharacterMovement : MonoBehaviour
     private bool isPickingUpTorch = false;
 
     private bool wasMovingLastFrame = false;
-private Quaternion lastRotationBeforeStop;
+    private Quaternion lastRotationBeforeStop;
 
 
     void Start()
@@ -59,7 +59,7 @@ private Quaternion lastRotationBeforeStop;
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         characterAnimation = GetComponent<CharacterAnimation>();
-        
+
         windZone = FindObjectOfType<WindZone>();
         slidingDirection = Vector3.zero;
 
@@ -75,7 +75,7 @@ private Quaternion lastRotationBeforeStop;
                 Debug.Log("AudioSource automatisk tilføjet til spilleren.");
             }
         }
-        
+
         // Sørg for at AudioSource er konfigureret korrekt
         footstepsAudioSource.loop = true;
         footstepsAudioSource.playOnAwake = false;
@@ -195,31 +195,31 @@ private Quaternion lastRotationBeforeStop;
             }
         }
 
-bool isCurrentlyMoving = moveDirection.magnitude >= 0.1f;
+        bool isCurrentlyMoving = moveDirection.magnitude >= 0.1f;
 
-if (isCurrentlyMoving)
-{
-    // Rotation while moving
-    Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
-    transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        if (isCurrentlyMoving)
+        {
+            // Rotation while moving
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
 
-    wasMovingLastFrame = true;
-}
-else
-{
-    // Just stopped moving
-    if (wasMovingLastFrame)
-    {
-        lastRotationBeforeStop = transform.rotation;
-        wasMovingLastFrame = false;
-    }
+            wasMovingLastFrame = true;
+        }
+        else
+        {
+            // Just stopped moving
+            if (wasMovingLastFrame)
+            {
+                lastRotationBeforeStop = transform.rotation;
+                wasMovingLastFrame = false;
+            }
 
-    // Keep last facing direction
-    transform.rotation = lastRotationBeforeStop;
-}
+            // Keep last facing direction
+            transform.rotation = lastRotationBeforeStop;
+        }
 
-        
-        
+
+
     }
 
     private void CheckGroundedAndSurface()
@@ -227,14 +227,14 @@ else
         // Brug OverlapSphere for mere pålidelig detektion
         Vector3 spherePosition = transform.position - new Vector3(0, groundCheckDistance / 2, 0);
         float sphereRadius = 0.3f;
-        
+
         // Få alle colliders inden for sfæren
         Collider[] hitColliders = Physics.OverlapSphere(spherePosition, sphereRadius, groundLayer);
-        
+
         // Nulstil status
         isGrounded = hitColliders.Length > 0;
         isOnIce = false;
-        
+
         if (isGrounded)
         {
             // Check hvert objekt for is-tag
@@ -246,7 +246,7 @@ else
                     break;
                 }
             }
-            
+
             jumpTriggered = false;
         }
     }
@@ -255,20 +255,20 @@ else
     {
         // Simple grundlæggende hop kraft
         Vector3 jumpVector = Vector3.up * jumpForce;
-        
+
         // Anvend altid basis-hop kraften
         rb.AddForce(jumpVector, ForceMode.Impulse);
-        
+
         // Hvis vi er i et vindstød
         if (isInWindGust && windZone != null)
         {
             // Dette er i verdenskoordinater - ikke relateret til spillerens rotation
             Vector3 worldBackward = new Vector3(0, 0, -1); // Baglæns på z-aksen
-            
+
             // Anvendt som en ekstrem kraft
             rb.AddForce(worldBackward * windBackwardsForce * 2.0f, ForceMode.Impulse);
         }
-        
+
         // Trigger animation
         animator.ResetTrigger("JumpTrigger");
         animator.SetTrigger("JumpTrigger");
@@ -280,7 +280,7 @@ else
         // Reducér hastigheden når crouched
         if (isCrouching)
             speed *= 0.5f; // Halv hastighed mens crouched
-            
+
         Vector3 moveVelocity = moveDirection * speed;
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
         slidingDirection = Vector3.zero;
@@ -291,7 +291,7 @@ else
         // Reducér hastigheden når crouched (også på is)
         if (isCrouching)
             speed *= 0.5f;
-            
+
         if (moveDirection.magnitude > 0.1f)
         {
             // Gradvis ændring af glidningsretning baseret på input
@@ -308,10 +308,10 @@ else
         float speedModifier = iceSpeedMultiplier;
         if (isInWindGust)
             speedModifier *= 0.7f;
-        
+
         // Beregn endelig bevægelseshastighed
         Vector3 moveVelocity = slidingDirection * speed * speedModifier;
-        
+
         // Anvend hastighed
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
     }
@@ -327,15 +327,21 @@ else
         isPickingUpTorch = false;
         rb.isKinematic = false;
     }
+private bool isRespawning = false;
 
-    public void DieAndRespawn()
-    {
-        StartCoroutine(RespawnCoroutine());
-    }
+public void DieAndRespawn()
+{
+    if (isRespawning) return;
+
+    isRespawning = true;
+    StartCoroutine(RespawnCoroutine());
+}
+
+
 
     private IEnumerator RespawnCoroutine()
     {
-   
+
         rb.isKinematic = true;
         rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 
@@ -373,11 +379,11 @@ else
         {
             torch.ReactivateTorchParticles();
         }
-TorchVignette vignette = FindObjectOfType<TorchVignette>();
-if (vignette != null)
-{
-    vignette.ResetVignette();
-}
+        TorchVignette vignette = FindObjectOfType<TorchVignette>();
+        if (vignette != null)
+        {
+            vignette.ResetVignette();
+        }
 
 
 
@@ -399,14 +405,16 @@ if (vignette != null)
 
         transform.position = respawnPoint + Vector3.up * 0.5f;
 
-       // rb.velocity = Vector3.zero;
+        // rb.velocity = Vector3.zero;
         // rb.angularVelocity = Vector3.zero;
         yield return null;
 
 
+isRespawning = false;
 
 
         Debug.Log("Player respawned.");
+        
     }
 
 
@@ -434,4 +442,15 @@ if (vignette != null)
             blackOverlay.gameObject.SetActive(false);
         }
     }
+    
+private void OnTriggerEnter(Collider other)
+{
+    if (other.CompareTag("Icicle"))
+    {
+        Debug.Log("Player hit by icicle trigger. Respawning...");
+        DieAndRespawn();
+    }
+}
+
+
 }

@@ -6,6 +6,7 @@ using Cinemachine;
 
 public class CutsceneManager : MonoBehaviour
 {
+    public GameObject wallsStartZone;
     public GameObject player;
 
     public GameObject gameManager;
@@ -72,6 +73,7 @@ public class CutsceneManager : MonoBehaviour
         blackOverlay.gameObject.SetActive(false);
         windzone.gameObject.SetActive(false);
         gameManager.gameObject.SetActive(false);
+        wallsStartZone.gameObject.SetActive(true);
     }
 
     public void StartCutscene()
