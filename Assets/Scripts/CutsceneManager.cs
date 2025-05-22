@@ -335,6 +335,21 @@ IEnumerator ShowDialogue(string text, string speaker = "Default")
     currentBox.gameObject.SetActive(true);
     currentBox.text = "";
 
+        // 🔊 AFSPIL LYDEFFEKT FOR SPECIFIKKE GUIDING LIGHT LINJER
+    if (speaker == "GuidingLight")
+    {
+        if (text.Contains("Follow the lights"))
+        {
+            FindObjectOfType<AudioManager>().PlayOneShot("GuidingLightVoice"); // Eller hvad lyden hedder
+            Debug.Log("Played sound for: Follow the lights");
+        }
+        else if (text.Contains("I'll lead you home"))
+        {
+            FindObjectOfType<AudioManager>().PlayOneShot("GuidingLightVoice"); // Eller hvad lyden hedder
+            Debug.Log("Played sound for: I'll lead you home");
+        }
+    }
+
     foreach (char c in text)
     {
         currentBox.text += c;

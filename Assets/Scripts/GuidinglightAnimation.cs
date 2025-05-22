@@ -9,6 +9,7 @@ public class GuidingLightController : MonoBehaviour
 
     private int currentIndex = 0;
     private bool moving = false;
+    private int torchesActivated = 0; // Tæller for aktiverede torches
 
     void Start()
     {
@@ -27,10 +28,20 @@ public class GuidingLightController : MonoBehaviour
                 particles.gameObject.SetActive(true);
                 particles.Play();
                 
-                // 🔊 AFSPIL LYDEFFEKT NÅR TORCH AKTIVERES
-                FindObjectOfType<AudioManager>().PlayOneShot("LightTorch");
+                // 🔊 AFSPIL LYDEFFEKT KUN PÅ DE FØRSTE TO TORCHES
+                if (torchesActivated < 2)
+                {
+                    FindObjectOfType<AudioManager>().PlayOneShot("LightTorch");
+                    Debug.Log($"Played sound for torch #{torchesActivated + 1}: " + other.name);
+                }
+                else
+                {
+                    Debug.Log($"No sound for torch #{torchesActivated + 1} (beyond first 2): " + other.name);
+                }
                 
-                Debug.Log("Activated particles and played sound for: " + other.name);
+                torchesActivated++; // Øg tælleren
+                
+                Debug.Log("Activated particles for: " + other.name);
             }
             else
             {

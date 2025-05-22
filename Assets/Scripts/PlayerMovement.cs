@@ -253,6 +253,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleJumping()
     {
+        FindObjectOfType<AudioManager>().PlayOneShot("Jump");
+        
         // Simple grundlæggende hop kraft
         Vector3 jumpVector = Vector3.up * jumpForce;
 
