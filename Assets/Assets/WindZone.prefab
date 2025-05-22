@@ -54,7 +54,6 @@ MonoBehaviour:
   playerTag: Player
   airborneHeight: 0.5
   airborneWindMultiplier: 30
-  windVisual: {fileID: 0}
 --- !u!182 &3929563445541499422
 WindZone:
   m_ObjectHideFlags: 0
