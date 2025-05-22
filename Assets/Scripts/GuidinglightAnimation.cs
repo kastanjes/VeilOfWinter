@@ -9,32 +9,46 @@ public class GuidingLightController : MonoBehaviour
 
     private int currentIndex = 0;
     private bool moving = false;
+    private int torchesActivated = 0; // Tæller for aktiverede torches
 
     void Start()
     {
         
     }
 
-void OnTriggerEnter(Collider other)
-{
-    Debug.Log("Entered trigger with: " + other.name);
-
-    if (other.CompareTag("CollectableTorch"))
+    void OnTriggerEnter(Collider other)
     {
-        var particles = other.GetComponentInChildren<ParticleSystem>();
-        if (particles != null)
+        Debug.Log("Entered trigger with: " + other.name);
+
+        if (other.CompareTag("CollectableTorch"))
         {
-            particles.gameObject.SetActive(true);
-            particles.Play();
-            Debug.Log("Activated particles on: " + other.name);
-        }
-        else
-        {
-            Debug.LogWarning("No ParticleSystem found on: " + other.name);
+            var particles = other.GetComponentInChildren<ParticleSystem>();
+            if (particles != null)
+            {
+                particles.gameObject.SetActive(true);
+                particles.Play();
+                
+                // 🔊 AFSPIL LYDEFFEKT KUN PÅ DE FØRSTE TO TORCHES
+                if (torchesActivated < 2)
+                {
+                    FindObjectOfType<AudioManager>().PlayOneShot("LightTorch");
+                    Debug.Log($"Played sound for torch #{torchesActivated + 1}: " + other.name);
+                }
+                else
+                {
+                    Debug.Log($"No sound for torch #{torchesActivated + 1} (beyond first 2): " + other.name);
+                }
+                
+                torchesActivated++; // Øg tælleren
+                
+                Debug.Log("Activated particles for: " + other.name);
+            }
+            else
+            {
+                Debug.LogWarning("No ParticleSystem found on: " + other.name);
+            }
         }
     }
-}
-
 
     public IEnumerator MoveToNextWaypoint()
     {

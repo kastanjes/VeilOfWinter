@@ -152,6 +152,10 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
 {
     torchLitOnce = true;
 
+        // 🔊 AFSPIL FIRESET LYDEFFEKT KUN FØRSTE GANG ILDEN TÆNDES
+        FindObjectOfType<AudioManager>().PlayOneShot("FireSet");
+        Debug.Log("Played FireSet sound for FIRST torch lighting.");
+
     if (objectToDisableOnFirstLight != null)
     {
         objectToDisableOnFirstLight.SetActive(false);

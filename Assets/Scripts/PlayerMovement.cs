@@ -253,6 +253,8 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleJumping()
     {
+        FindObjectOfType<AudioManager>().PlayOneShot("Jump");
+        
         // Simple grundlæggende hop kraft
         Vector3 jumpVector = Vector3.up * jumpForce;
 
@@ -345,6 +347,12 @@ private IEnumerator RespawnCoroutine()
     rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 
     animator.SetTrigger("Dying");
+
+        // Vent 3 sekunder før lydeffekt (samme timing som før)
+    yield return new WaitForSeconds(2.0f);
+    
+    // Afspil død/fald lydeffekten én gang med bedre timing
+    FindObjectOfType<AudioManager>().PlayOneShot("PlayerFall");
 
     // Wait for Dying animation to start
     while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))

@@ -236918,6 +236918,36 @@ MonoBehaviour:
     pitch: 1
     loop: 1
     source: {fileID: 0}
+  - name: PlayerFall
+    clip: {fileID: 8300000, guid: d0bc5ecafe2de42e09acf9b0ce176153, type: 3}
+    volume: 0.7
+    pitch: 1.2
+    loop: 0
+    source: {fileID: 0}
+  - name: LightTorch
+    clip: {fileID: 8300000, guid: 3926d2677b6ad4ab089afa05c9548638, type: 3}
+    volume: 0.42
+    pitch: 1.2
+    loop: 0
+    source: {fileID: 0}
+  - name: Jump
+    clip: {fileID: 8300000, guid: 7d66066852dbb4d7cb7e517990f94740, type: 3}
+    volume: 0.8
+    pitch: 1.5
+    loop: 0
+    source: {fileID: 0}
+  - name: GuidingLightVoice
+    clip: {fileID: 8300000, guid: b235e5dd2cda74783bc30f4049b42382, type: 3}
+    volume: 0.8
+    pitch: 1.5
+    loop: 0
+    source: {fileID: 0}
+  - name: FireSet
+    clip: {fileID: 8300000, guid: fb8118369ac7244b2bd2301d657fb9fd, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
 --- !u!4 &2024088899
 Transform:
   m_ObjectHideFlags: 0
