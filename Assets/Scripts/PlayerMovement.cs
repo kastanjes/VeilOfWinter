@@ -339,109 +339,104 @@ public void DieAndRespawn()
 
 
 
-    private IEnumerator RespawnCoroutine()
-    {
+private IEnumerator RespawnCoroutine()
+{
+    rb.isKinematic = true;
+    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
 
-        rb.isKinematic = true;
-        rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
+    animator.SetTrigger("Dying");
 
-
-        animator.SetTrigger("Dying");
-
-        // Wait for Dying animation to start
-        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
-            yield return null;
-
-        // Wait for Dying animation to finish
-        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-            yield return null;
-
-        // 🔲 Fade to black
-        yield return StartCoroutine(FadeBlackOverlay(true));
-
-        // Move to respawn point
-        Vector3 respawnPoint = RespawnManager.Instance != null
-            ? RespawnManager.Instance.GetRespawnPoint()
-            : transform.position;
-
-        transform.position = respawnPoint;
-
-        rb.isKinematic = false;
-        rb.constraints &= ~(
-            RigidbodyConstraints.FreezePositionX |
-            RigidbodyConstraints.FreezePositionY |
-            RigidbodyConstraints.FreezePositionZ
-        );
-        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
-        TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
-        if (torch != null)
-        {
-            torch.ReactivateTorchParticles();
-        }
-        TorchVignette vignette = FindObjectOfType<TorchVignette>();
-        if (vignette != null)
-        {
-            vignette.ResetVignette();
-        }
-
-
-
-        // 🔲 Fade back in
-        yield return StartCoroutine(FadeBlackOverlay(false));
-        yield return new WaitForSeconds(1f); // Small delay before trigger
-
-
-        // ▶️ Play respawn animation now that screen is visible
-        animator.SetTrigger("Respawning");
-
-        // Wait for animation to start
-        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
-            yield return null;
-
-        // Wait for animation to finish
-        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-            yield return null;
-
-        transform.position = respawnPoint + Vector3.up * 0.5f;
-
-        // rb.velocity = Vector3.zero;
-        // rb.angularVelocity = Vector3.zero;
+    // Wait for Dying animation to start
+    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
         yield return null;
 
+    // Wait for Dying animation to finish
+    while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+        yield return null;
 
-isRespawning = false;
+    // 🔲 Fade to black
+    yield return StartCoroutine(FadeBlackOverlay(true));
+
+    // Move to respawn point
+    Vector3 respawnPoint = RespawnManager.Instance != null
+        ? RespawnManager.Instance.GetRespawnPoint()
+        : transform.position;
+
+    transform.position = respawnPoint;
+    transform.position += Vector3.up * 0.5f;
+
+    rb.isKinematic = false;
+    rb.constraints &= ~(
+        RigidbodyConstraints.FreezePositionX |
+        RigidbodyConstraints.FreezePositionY |
+        RigidbodyConstraints.FreezePositionZ
+    );
+    rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+    // ▶️ Play respawn animation
+    animator.SetTrigger("Respawning");
+    
+
+    // Wait for "Respawning" to start
+    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
+        yield return null;
+
+// Wait until animation finishes
+while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.1f)
+    yield return null;
+
+// ✅ First: Reactivate torch and vignette immediately
+TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
+if (torch != null)
+{
+    torch.ReactivateTorchParticles();
+}
+
+TorchVignette vignette = FindObjectOfType<TorchVignette>();
+if (vignette != null)
+{
+    vignette.ResetVignette();
+}
+
+// 🔲 Then: Fade back in faster (optional: 1s instead of 2s)
+yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
 
 
-        Debug.Log("Player respawned.");
-        
-    }
+    isRespawning = false;
+
+    Debug.Log("Player respawned.");
+}
 
 
-    private IEnumerator FadeBlackOverlay(bool fadeIn)
-    {
-        float t = 0f;
-        float startAlpha = blackOverlay.alpha;
-        float targetAlpha = fadeIn ? 1f : 0f;
 
-        // Make sure it's visible before fading
+private IEnumerator FadeBlackOverlay(bool fadeIn, float duration = 1f)
+{
+    float t = 0f;
+    float startAlpha = blackOverlay.alpha;
+    float targetAlpha = fadeIn ? 1f : 0f;
+
+    // Always ensure the object is active before starting a fade
+    if (!blackOverlay.gameObject.activeSelf)
         blackOverlay.gameObject.SetActive(true);
 
-        while (t < fadeDuration)
-        {
-            t += Time.deltaTime;
-            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / fadeDuration);
-            blackOverlay.alpha = alpha;
-            yield return null;
-        }
-
-        blackOverlay.alpha = targetAlpha;
-
-        if (!fadeIn)
-        {
-            blackOverlay.gameObject.SetActive(false);
-        }
+    while (t < duration)
+    {
+        t += Time.deltaTime;
+        float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / duration);
+        blackOverlay.alpha = alpha;
+        yield return null;
     }
+
+    blackOverlay.alpha = targetAlpha;
+
+    // Deactivate the black overlay *only* after fade-out
+    if (!fadeIn)
+    {
+        blackOverlay.gameObject.SetActive(false);
+    }
+}
+
+
     
 private void OnTriggerEnter(Collider other)
 {

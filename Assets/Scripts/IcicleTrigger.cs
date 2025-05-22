@@ -9,47 +9,76 @@ public class IcicleTrigger : MonoBehaviour
     [Header("Shake Settings")]
     public float shakeDuration = 0.5f;
     public float shakeAmount = 0.001f;
-
     private Vector3 originalPosition;
+
+    [Header("Audio Settings")]
+    public float volume = 1.0f;
+    private AudioSource audioSource;
+    private static AudioClip dropSound;
+
+    private static bool dropSoundIsPlaying = false; // 👈 prevent overlap
 
     void Start()
     {
         parentRb = GetComponentInParent<Rigidbody>();
+        originalPosition = parentRb != null ? parentRb.transform.localPosition : Vector3.zero;
 
-        if (parentRb == null)
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
         {
-            Debug.LogError("IcicleTrigger: No Rigidbody found on parent object!");
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
         }
 
-        originalPosition = parentRb.transform.localPosition;
+        if (dropSound == null)
+        {
+            dropSound = Resources.Load<AudioClip>("Audio/SFX - Icicles Break Drop (Christmas)");
+            if (dropSound == null)
+                Debug.LogError("Drop sound not found in Resources/Audio folder.");
+        }
     }
 
-    private void OnTriggerEnter(Collider other)
+private void OnTriggerEnter(Collider other)
+{
+    if (!hasFallen && other.CompareTag("Player"))
     {
-        if (!hasFallen && other.CompareTag("Player"))
-        {
-            hasFallen = true;
-            StartCoroutine(ShakeAndDrop());
-        }
-    }
+        hasFallen = true;
 
-    private IEnumerator ShakeAndDrop()
-    {
-        float elapsed = 0f;
-
-        while (elapsed < shakeDuration)
+        // 🎵 Play sound immediately
+        if (!dropSoundIsPlaying && dropSound != null)
         {
-            elapsed += Time.deltaTime;
-            Vector3 randomOffset = Random.insideUnitSphere * shakeAmount;
-            parentRb.transform.localPosition = originalPosition + randomOffset;
-            yield return null;
+            dropSoundIsPlaying = true;
+            audioSource.PlayOneShot(dropSound, volume);
+            StartCoroutine(ResetDropSoundFlag(dropSound.length));
         }
 
-        // Reset position before drop
-        parentRb.transform.localPosition = originalPosition;
-
-        // Enable gravity
-        parentRb.useGravity = true;
-        parentRb.isKinematic = false;
+        StartCoroutine(ShakeAndDrop());
     }
 }
+
+private IEnumerator ShakeAndDrop()
+{
+    float elapsed = 0f;
+
+    while (elapsed < shakeDuration)
+    {
+        elapsed += Time.deltaTime;
+        Vector3 randomOffset = Random.insideUnitSphere * shakeAmount;
+        parentRb.transform.localPosition = originalPosition + randomOffset;
+        yield return null;
+    }
+
+    parentRb.transform.localPosition = originalPosition;
+
+    parentRb.useGravity = true;
+    parentRb.isKinematic = false;
+}
+
+private IEnumerator ResetDropSoundFlag(float delay)
+{
+    yield return new WaitForSeconds(delay);
+    dropSoundIsPlaying = false;
+}
+
+}
+

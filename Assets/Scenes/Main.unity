@@ -8067,6 +8067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &30172037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8771,6 +8772,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &34327288
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -11977,6 +11979,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &62465955
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -18643,6 +18646,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &107769496
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21426,6 +21430,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &129622844
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -21494,6 +21499,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &131146227
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -22306,6 +22312,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &137000761
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -25822,6 +25829,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &183913994
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29595,6 +29603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &225269817
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29663,6 +29672,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &226367827
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -30189,6 +30199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &235937140
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34463,6 +34474,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &281973898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35609,6 +35621,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &291556864
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -36209,6 +36222,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cbc6704d4496710439889041094517f3, type: 3}
   m_PrefabInstance: {fileID: 293564554}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &293592484
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 293592485}
+  m_Layer: 0
+  m_Name: AudioClips
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &293592485
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 293592484}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -16.46382, y: 2.9409025, z: 573.01746}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1335268961}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &294598065
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39345,7 +39390,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3f885c477dccb984aaa344ff0c56b33a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.262
+      value: 8.652
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 3f885c477dccb984aaa344ff0c56b33a, type: 3}
       propertyPath: m_LocalPosition.z
@@ -43697,6 +43742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &364089412
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -43765,6 +43811,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &365074115
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -46021,7 +46068,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbc6704d4496710439889041094517f3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -17.6
+      value: -16.9
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: cbc6704d4496710439889041094517f3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -47277,6 +47324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &396666513
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -47765,6 +47813,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &401962950
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -51401,6 +51450,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &425414163
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -52500,6 +52550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1 &436283147
 GameObject:
   m_ObjectHideFlags: 0
@@ -57518,6 +57569,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &491032587
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -58186,6 +58238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &502743178
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -58961,6 +59014,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &510310158
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -60065,6 +60119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &524524882
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -61443,6 +61498,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &532954064
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -63378,6 +63434,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &552339431
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -68538,6 +68595,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &599201840
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70311,6 +70369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &611832951
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70753,6 +70812,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &618415903
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -70903,6 +70963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &619233948
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72039,6 +72100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &625154470
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -72347,7 +72409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 10.122
+      value: 10.512
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -76068,6 +76130,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &663464652
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -89192,6 +89255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &779052980
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -105488,6 +105552,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &902720631
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -113410,6 +113475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &981440482
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -123449,7 +123515,7 @@ Transform:
   m_GameObject: {fileID: 1064617240}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0430832, y: 0.8548681, z: 0.0679527, w: 0.51256883}
-  m_LocalPosition: {x: 78.84, y: 7.13, z: 68.27}
+  m_LocalPosition: {x: 78.84, y: 7.91, z: 68.27}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -125001,6 +125067,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1076751285
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -126797,6 +126864,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1094342770
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -133838,7 +133906,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5427015270787588196, guid: 5c8ced664dfcee84ca3bbb51bf61b5b8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 6.26
+      value: 4.781
       objectReference: {fileID: 0}
     - target: {fileID: 5427015270787588196, guid: 5c8ced664dfcee84ca3bbb51bf61b5b8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -135055,6 +135123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1137045507
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -137222,7 +137291,7 @@ Transform:
   m_GameObject: {fileID: 1156016191}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0430832, y: 0.8548681, z: 0.0679527, w: 0.51256883}
-  m_LocalPosition: {x: 78.84, y: 7.13, z: 68.270004}
+  m_LocalPosition: {x: 78.84, y: 7.91, z: 68.270004}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -140988,6 +141057,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1198106206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -146627,6 +146697,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1241486263
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -152157,6 +152228,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1282046315
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -154903,6 +154975,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1302303376
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -157937,7 +158010,7 @@ Transform:
   m_GameObject: {fileID: 1322321496}
   serializedVersion: 2
   m_LocalRotation: {x: -0.051495362, y: -0.40661013, z: -0.040795755, w: 0.9112366}
-  m_LocalPosition: {x: 72.19, y: 8.376165, z: 59.88001}
+  m_LocalPosition: {x: 72.44, y: 9.13, z: 59.88001}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -159180,6 +159253,134 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cbc6704d4496710439889041094517f3, type: 3}
   m_PrefabInstance: {fileID: 1335061085}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1335268960
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1335268961}
+  - component: {fileID: 1335268962}
+  m_Layer: 0
+  m_Name: HowlingWind
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1335268961
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335268960}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 13.06382, y: 6.1990967, z: -572.56744}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 293592485}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!82 &1335268962
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335268960}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 5f95b0b51e10741498985bd145a20cf5, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 0.2
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &1335744542
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -161213,6 +161414,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1351354734
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -161855,6 +162057,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1357138970
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -162778,6 +162981,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1364253966
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -168054,7 +168258,7 @@ Transform:
   m_GameObject: {fileID: 1403412405}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0430832, y: 0.8548681, z: 0.0679527, w: 0.51256883}
-  m_LocalPosition: {x: 78.84, y: 7.13, z: 68.270004}
+  m_LocalPosition: {x: 78.84, y: 7.91, z: 68.270004}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -169346,6 +169550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1417864064
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -170936,6 +171141,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1430327510
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -178566,6 +178772,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1503379248
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -179194,6 +179401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1505992264
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -180057,7 +180265,7 @@ Transform:
   m_GameObject: {fileID: 1514447284}
   serializedVersion: 2
   m_LocalRotation: {x: -0.051495362, y: -0.40661013, z: -0.040795755, w: 0.9112366}
-  m_LocalPosition: {x: 72.19, y: 8.376165, z: 59.88}
+  m_LocalPosition: {x: 72.44, y: 9.13, z: 59.88}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -182996,7 +183204,7 @@ Transform:
   m_GameObject: {fileID: 1545149649}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0430832, y: 0.8548681, z: 0.0679527, w: 0.51256883}
-  m_LocalPosition: {x: 78.8396, y: 7.2678785, z: 68.26959}
+  m_LocalPosition: {x: 78.8396, y: 8.047878, z: 68.26959}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -183818,6 +184026,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1552256949
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -188078,6 +188287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1602271661
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -190125,6 +190335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1618130707
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -190967,6 +191178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1625065469
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -191035,6 +191247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1625962073
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -205091,6 +205304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &1751614533
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -206914,11 +207128,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 73.33
+      value: 73.58
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 8.65
+      value: 9.403834
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -216116,6 +216330,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1837099533
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -222530,7 +222745,7 @@ Transform:
   m_GameObject: {fileID: 1893360531}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0430832, y: 0.8548681, z: 0.0679527, w: 0.51256883}
-  m_LocalPosition: {x: 78.84, y: 7.13, z: 68.270004}
+  m_LocalPosition: {x: 78.84, y: 7.91, z: 68.270004}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -226120,6 +226335,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &1923883144
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -227158,7 +227374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.263834
+      value: 8.043834
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 369b3fb5fec56f041886c74c03e44e3b, type: 3}
       propertyPath: m_LocalPosition.z
@@ -227772,7 +227988,7 @@ Transform:
   m_GameObject: {fileID: 1938671533}
   serializedVersion: 2
   m_LocalRotation: {x: -0.051495362, y: -0.40661013, z: -0.040795755, w: 0.9112366}
-  m_LocalPosition: {x: 72.189606, y: 8.514044, z: 59.879597}
+  m_LocalPosition: {x: 72.439606, y: 9.267879, z: 59.879597}
   m_LocalScale: {x: 43.910007, y: 43.91001, z: 43.91}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -238518,6 +238734,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!1001 &2043361950
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -244037,6 +244254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &2050618985
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -246287,7 +246505,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1eda0cd75dad7ff448e11aab33e20c9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wallsStartZone: {fileID: 0}
+  howlingWindSound: {fileID: 1335268960}
   player: {fileID: 111128306}
   gameManager: {fileID: 1707373034}
   guidingLight: {fileID: 529452220}
@@ -246522,6 +246740,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &2077298656
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -254322,6 +254541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shakeDuration: 0.5
   shakeAmount: 0.001
+  volume: 1
 --- !u!65 &2144641565
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -274296,3 +274516,4 @@ SceneRoots:
   - {fileID: 2024088899}
   - {fileID: 195933948}
   - {fileID: 121178826}
+  - {fileID: 293592485}

@@ -6,7 +6,9 @@ using Cinemachine;
 
 public class CutsceneManager : MonoBehaviour
 {
-    public GameObject wallsStartZone;
+    public GameObject howlingWindSound;
+    private AudioSource windAudio;
+
     public GameObject player;
 
     public GameObject gameManager;
@@ -73,7 +75,10 @@ public class CutsceneManager : MonoBehaviour
         blackOverlay.gameObject.SetActive(false);
         windzone.gameObject.SetActive(false);
         gameManager.gameObject.SetActive(false);
-        wallsStartZone.gameObject.SetActive(true);
+        
+        windAudio = howlingWindSound.GetComponent<AudioSource>();
+        windAudio.Stop(); // Ensure it's not playing at the beginning
+
     }
 
     public void StartCutscene()
@@ -125,6 +130,9 @@ public class CutsceneManager : MonoBehaviour
         continuePrompt.gameObject.SetActive(true);
 
         windzone.gameObject.SetActive(true);
+
+
+
         // plane.gameObject.SetActive(false);
 
         RenderSettings.fogColor = new Color(0f / 255f, 1f / 255f, 25f / 255f);
@@ -135,7 +143,7 @@ public class CutsceneManager : MonoBehaviour
         }
         // STAND UP
 playerAnimator.SetTrigger("StandingUp");
-
+StartCoroutine(FadeInWind(2f));
         // FADE BACK IN
         yield return FadeBlackOutSlow();
 
@@ -454,6 +462,18 @@ IEnumerator FadeVignetteToBlack(float duration)
 
 
 
+IEnumerator FadeInWind(float duration)
+{
+    windAudio.volume = 0f;
+    windAudio.Play();
+    float t = 0f;
+    while (t < duration)
+    {
+        t += Time.deltaTime;
+        windAudio.volume = Mathf.Lerp(0f, 0.2f, t / duration);
+        yield return null;
+    }
+}
 
 
 
