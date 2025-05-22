@@ -157,7 +157,7 @@ public class CharacterMovement : MonoBehaviour
                 // Vis kun wind animation hvis ikke crouched
                 if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
                 {
-                    // animator.SetTrigger("Wind");
+                    animator.SetTrigger("Wind");
                     Debug.Log("Player hit by wind");
                     windAnimationTriggered = true;
                 }
@@ -256,21 +256,34 @@ public class CharacterMovement : MonoBehaviour
     private void HandleJumping()
     {
         FindObjectOfType<AudioManager>().PlayOneShot("Jump");
-        
+
         // Simple grundlæggende hop kraft
         Vector3 jumpVector = Vector3.up * jumpForce;
+        float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
 
-        // Anvend altid basis-hop kraften
-        rb.AddForce(jumpVector, ForceMode.Impulse);
-
-        // Hvis vi er i et vindstød
-        if (isInWindGust && windZone != null)
+        if (isInWindGust)
         {
-            // Dette er i verdenskoordinater - ikke relateret til spillerens rotation
-            Vector3 worldBackward = new Vector3(0, 0, -1); // Baglæns på z-aksen
+            Vector3 windDirection = windZone.transform.forward;
+            Vector3 forwardMovement = Vector3.zero;
 
-            // Anvendt som en ekstrem kraft
-            rb.AddForce(worldBackward * windBackwardsForce * 2.0f, ForceMode.Impulse);
+            if (forward > 0)
+            {
+                forwardMovement = transform.forward * (forward * maxMoveSpeed * forwardJumpForceReduction);
+                Vector3 backwardsVector = -windDirection * windBackwardsForce;
+                rb.AddForce(jumpVector + forwardMovement + backwardsVector, ForceMode.Impulse);
+            }
+            else
+            {
+                Vector3 backwardsVector = -windDirection * windBackwardsForce;
+                if (forward < 0)
+                    backwardsVector *= 1.2f;
+                rb.AddForce(jumpVector + backwardsVector, ForceMode.Impulse);
+            }
+        }
+        else
+        {
+            // Anvend altid basis-hop kraften
+            rb.AddForce(jumpVector, ForceMode.Impulse);
         }
 
         // Trigger animation

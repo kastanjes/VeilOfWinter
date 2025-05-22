@@ -6,8 +6,8 @@ public class AutoWindController : MonoBehaviour
     [Header("Gameplay Settings")]
     public float windStormForce = 20f;
     public float baseWindForce = 3f;
-    public float maxTimeBetweenGusts = 8f;
     public float minTimeBetweenGusts = 3f;
+    public float maxTimeBetweenGusts = 8f;
     public float minGustDuration = 1.5f;
     public float maxGustDuration = 3.5f;
 
@@ -26,6 +26,7 @@ public class AutoWindController : MonoBehaviour
     private float lastGroundedY;
     private bool wasAirborne = false;
     private WindZone windZone;
+    private Animator playerAnimator;
 
     void Start()
     {
@@ -42,6 +43,7 @@ public class AutoWindController : MonoBehaviour
         if (playerObject != null)
         {
             playerRigidbody = playerObject.GetComponent<Rigidbody>();
+            playerAnimator = playerObject.GetComponent<Animator>();
             lastGroundedY = playerObject.transform.position.y;
         }
 
@@ -51,18 +53,18 @@ public class AutoWindController : MonoBehaviour
     void FixedUpdate()
     {
         HandleWindGustTiming();
+
+        if (playerObject != null && playerRigidbody != null)
+            CheckPlayerAirborne();
+
+        if (isGustActive && windVisual != null)
+            PositionWindFX();
     }
 
     private void HandleWindGustTiming()
     {
-        if (playerObject != null && playerRigidbody != null)
-            CheckPlayerAirborne();
-
-        if (!isGustActive && windVisual != null)
-        {
-            if (Time.time >= nextGustTime)
-                StartCoroutine(TriggerWindGust());
-        }
+        if (!isGustActive && Time.time >= nextGustTime)
+            StartCoroutine(TriggerWindGust());
     }
 
     private void CheckPlayerAirborne()
@@ -70,14 +72,15 @@ public class AutoWindController : MonoBehaviour
         bool isAirborne = (playerObject.transform.position.y - lastGroundedY) > airborneHeight;
 
         if (!isAirborne)
-        {
             lastGroundedY = playerObject.transform.position.y;
-        }
 
-        if (isAirborne && isGustActive)
+        if (isAirborne && !wasAirborne)
         {
             Vector3 windForce = windZone.transform.forward * windStormForce * airborneWindMultiplier;
             playerRigidbody.AddForce(windForce * Time.deltaTime, ForceMode.Force);
+
+            if (playerAnimator != null)
+                playerAnimator.SetTrigger("Wind");
         }
 
         wasAirborne = isAirborne;
@@ -90,9 +93,8 @@ public class AutoWindController : MonoBehaviour
 
         if (windVisual != null)
         {
-            Vector3 windDir = windZone.transform.forward;
-            windVisual.SetParticleWindDirection(windDir, speed: 10f);
-            windVisual.PositionFX(playerObject.transform.position, windDir, 2.5f, 1.5f);
+            SetParticleWindDirection();
+            PositionWindFX();
             windVisual.ShowWind();
         }
 
@@ -106,6 +108,36 @@ public class AutoWindController : MonoBehaviour
 
         isGustActive = false;
         ScheduleNextGust();
+    }
+
+    private void SetParticleWindDirection()
+    {
+        if (windVisual?.windParticles == null || windZone == null)
+            return;
+
+        var velocityModule = windVisual.windParticles.velocityOverLifetime;
+        velocityModule.enabled = true;
+
+        Vector3 windDir = windZone.transform.forward.normalized;
+        float speed = 10f;
+
+        velocityModule.x = new ParticleSystem.MinMaxCurve(windDir.x * speed);
+        velocityModule.y = new ParticleSystem.MinMaxCurve(windDir.y * speed);
+        velocityModule.z = new ParticleSystem.MinMaxCurve(windDir.z * speed);
+    }
+
+    private void PositionWindFX()
+    {
+        if (windVisual == null || playerObject == null || windZone == null)
+            return;
+
+        Vector3 windDir = windZone.transform.forward;
+        windDir.y = 0;
+        windDir.Normalize();
+
+        Vector3 spawnPos = playerObject.transform.position + windDir * 2.5f;
+        windVisual.transform.position = spawnPos;
+        windVisual.transform.rotation = Quaternion.LookRotation(windDir);
     }
 
     private void ScheduleNextGust()
