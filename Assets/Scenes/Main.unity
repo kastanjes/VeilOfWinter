@@ -236918,6 +236918,18 @@ MonoBehaviour:
     pitch: 1
     loop: 1
     source: {fileID: 0}
+  - name: PlayerFall
+    clip: {fileID: 8300000, guid: d0bc5ecafe2de42e09acf9b0ce176153, type: 3}
+    volume: 0.7
+    pitch: 1.2
+    loop: 0
+    source: {fileID: 0}
+  - name: LightTorch
+    clip: {fileID: 8300000, guid: 3926d2677b6ad4ab089afa05c9548638, type: 3}
+    volume: 0.42
+    pitch: 1.2
+    loop: 0
+    source: {fileID: 0}
 --- !u!4 &2024088899
 Transform:
   m_ObjectHideFlags: 0

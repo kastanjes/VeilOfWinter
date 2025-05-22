@@ -15,26 +15,29 @@ public class GuidingLightController : MonoBehaviour
         
     }
 
-void OnTriggerEnter(Collider other)
-{
-    Debug.Log("Entered trigger with: " + other.name);
-
-    if (other.CompareTag("CollectableTorch"))
+    void OnTriggerEnter(Collider other)
     {
-        var particles = other.GetComponentInChildren<ParticleSystem>();
-        if (particles != null)
+        Debug.Log("Entered trigger with: " + other.name);
+
+        if (other.CompareTag("CollectableTorch"))
         {
-            particles.gameObject.SetActive(true);
-            particles.Play();
-            Debug.Log("Activated particles on: " + other.name);
-        }
-        else
-        {
-            Debug.LogWarning("No ParticleSystem found on: " + other.name);
+            var particles = other.GetComponentInChildren<ParticleSystem>();
+            if (particles != null)
+            {
+                particles.gameObject.SetActive(true);
+                particles.Play();
+                
+                // 🔊 AFSPIL LYDEFFEKT NÅR TORCH AKTIVERES
+                FindObjectOfType<AudioManager>().PlayOneShot("LightTorch");
+                
+                Debug.Log("Activated particles and played sound for: " + other.name);
+            }
+            else
+            {
+                Debug.LogWarning("No ParticleSystem found on: " + other.name);
+            }
         }
     }
-}
-
 
     public IEnumerator MoveToNextWaypoint()
     {

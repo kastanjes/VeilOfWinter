@@ -39,7 +39,6 @@ public class AudioManager : MonoBehaviour
         Play("Theme");
     }
 
-
     public void Play (string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -50,6 +49,19 @@ public class AudioManager : MonoBehaviour
         }
 
         s.source.Play();
+    }
 
+    // Ny PlayOneShot metode
+    public void PlayOneShot(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+
+        // PlayOneShot afspiller lyden én gang uden at afbryde andre lyde
+        s.source.PlayOneShot(s.source.clip, s.volume);
     }
 }

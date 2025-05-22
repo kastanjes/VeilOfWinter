@@ -346,6 +346,12 @@ private IEnumerator RespawnCoroutine()
 
     animator.SetTrigger("Dying");
 
+        // Vent 3 sekunder før lydeffekt (samme timing som før)
+    yield return new WaitForSeconds(2.0f);
+    
+    // Afspil død/fald lydeffekten én gang med bedre timing
+    FindObjectOfType<AudioManager>().PlayOneShot("PlayerFall");
+
     // Wait for Dying animation to start
     while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
         yield return null;
