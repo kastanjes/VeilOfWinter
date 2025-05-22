@@ -4,59 +4,78 @@ using TMPro;
 
 public class DialogueTriggerEndScene : MonoBehaviour
 {
-    [Header("Dialogue Settings")]
+    [System.Serializable]
+    public class DialogueLine
+    {
+        public string speaker;
+        [TextArea] public string line;
+        public float waitTime = 2f; // how long to wait after showing the line
+    }
+
+    [Header("Dialogue Setup")]
+    public DialogueLine[] dialogueSequence;
+
+    public TextMeshProUGUI playerText;
+    public TextMeshProUGUI guidingLightText;
+
+    [Header("Typing Settings")]
     public float typeSpeed = 0.03f;
-    [TextArea] public string dialogueLine;
 
-    [Header("Dialogue Boxes")]
-    public TextMeshProUGUI playerTextBox;
-    public CanvasGroup playerCanvas;
-
-    public TextMeshProUGUI guidingLightTextBox;
-    public CanvasGroup guidingLightCanvas;
-
-    
-    public enum Speaker { Player, GuidingLight }
-    public Speaker speaker;
+    private Coroutine sequence;
 
     public void TriggerDialogue()
     {
-        StartCoroutine(PlayDialogue());
+        if (sequence != null)
+            StopCoroutine(sequence);
+
+        sequence = StartCoroutine(PlaySequence());
     }
 
-    private IEnumerator PlayDialogue()
+    private IEnumerator PlaySequence()
     {
-        // Hide both canvases first
-        playerCanvas.alpha = 0;
-        guidingLightCanvas.alpha = 0;
+        playerText.gameObject.SetActive(false);
+        guidingLightText.gameObject.SetActive(false);
 
-        TextMeshProUGUI activeTextBox = null;
-        CanvasGroup activeCanvas = null;
-
-        switch (speaker)
+        foreach (var entry in dialogueSequence)
         {
-            case Speaker.Player:
-                activeTextBox = playerTextBox;
-                activeCanvas = playerCanvas;
-                break;
-            case Speaker.GuidingLight:
-                activeTextBox = guidingLightTextBox;
-                activeCanvas = guidingLightCanvas;
-                break;
+            TextMeshProUGUI currentText;
+
+            // Determine which text box to use
+            if (entry.speaker == "Player")
+                currentText = playerText;
+            else if (entry.speaker == "GuidingLight")
+                currentText = guidingLightText;
+            else
+                currentText = playerText; // fallback/default
+
+            // Optional: play specific voice line
+            if (entry.speaker == "GuidingLight")
+            {
+                if (entry.line.Contains("Follow the lights") || entry.line.Contains("I'll lead you home"))
+                {
+                    FindObjectOfType<AudioManager>()?.PlayOneShot("GuidingLightVoice");
+                }
+            }
+
+            // Clear both boxes before showing new line
+            playerText.gameObject.SetActive(false);
+            guidingLightText.gameObject.SetActive(false);
+            currentText.text = "";
+            currentText.gameObject.SetActive(true);
+
+            // Type out line
+            foreach (char c in entry.line)
+            {
+                currentText.text += c;
+                yield return new WaitForSeconds(typeSpeed);
+            }
+
+            // Wait for custom duration
+            yield return new WaitForSeconds(entry.waitTime);
         }
 
-        activeCanvas.alpha = 1;
-        activeTextBox.text = "";
-
-        foreach (char c in dialogueLine)
-        {
-            activeTextBox.text += c;
-            yield return new WaitForSeconds(typeSpeed);
-        }
-
-        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.E));
-
-        activeCanvas.alpha = 0;
-        gameObject.SetActive(false); // Optional cleanup
+        // Clean up
+        playerText.gameObject.SetActive(false);
+        guidingLightText.gameObject.SetActive(false);
     }
 }

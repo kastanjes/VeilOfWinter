@@ -113,12 +113,7 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
                 isLit = false;
                 Debug.Log("Torch faded out.");
 
-            if (EndSceneTrigger.playerEnteredEndZone)
-            {
-                Debug.Log("Torch faded out in end zone. Loading end cutscene scene...");
-                SceneLoader.Instance.LoadScene("EndScene"); // ✅ change scene name if needed
-            }
-            else if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+            if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
             {
                 GameObject player = GameObject.FindWithTag("Player");
                 if (player != null)

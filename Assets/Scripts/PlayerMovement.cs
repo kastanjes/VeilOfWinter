@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 
 [RequireComponent(typeof(Rigidbody))]
@@ -362,8 +364,18 @@ private IEnumerator RespawnCoroutine()
     while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
         yield return null;
 
-    // 🔲 Fade to black
-    yield return StartCoroutine(FadeBlackOverlay(true));
+// 🔲 Fade to black
+yield return StartCoroutine(FadeBlackOverlay(true));
+
+// 🧠 Check if the player should go to the end scene instead of respawning
+if (EndSceneTrigger.playerEnteredEndZone)
+{
+    Debug.Log("Triggering end cutscene instead of respawning.");
+    SceneManager.LoadScene("EndScene");
+
+    yield break; // Stop the coroutine here
+}
+
 
     // Move to respawn point
     Vector3 respawnPoint = RespawnManager.Instance != null
