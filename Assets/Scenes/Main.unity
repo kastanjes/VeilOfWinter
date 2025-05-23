@@ -167687,7 +167687,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1362509157
 Transform:
   m_ObjectHideFlags: 0
@@ -263211,7 +263211,7 @@ MonoBehaviour:
   drawTripods: 0
   boneSize: 1
   tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
+  boneColor: {r: 0.8867924, g: 0.87554735, b: 0.40574938, a: 0.5}
   m_Transforms:
   - {fileID: 5936835479142175418}
 --- !u!4 &6430933830502416434
@@ -274438,7 +274438,7 @@ MonoBehaviour:
   drawTripods: 0
   boneSize: 1
   tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
+  boneColor: {r: 0.9056604, g: 0.89277697, b: 0.6707013, a: 0.5}
   m_Transforms:
   - {fileID: 3497591197889151815}
   - {fileID: 6856988190794441470}
