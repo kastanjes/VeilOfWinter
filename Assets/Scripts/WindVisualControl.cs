@@ -38,15 +38,20 @@ public class WindVisualController : MonoBehaviour
         vel.z = new ParticleSystem.MinMaxCurve(windDir.z * speed);
     }
 
-    public void PositionFX(Vector3 playerPos, Vector3 windDir, float forwardOffset, float sideOffset)
+    public void PositionFX(Vector3 playerPosition, Vector3 windDir, float forwardDistance, float sideOffset = 1f)
     {
         windDir.y = 0;
         windDir.Normalize();
-        Vector3 spawnPos = playerPos + windDir * forwardOffset;
-        Vector3 side = Vector3.Cross(Vector3.up, windDir).normalized * sideOffset;
-        transform.position = spawnPos + side;
-        transform.rotation = Quaternion.LookRotation(windDir);
+
+        Vector3 spawnPos = playerPosition - windDir * forwardDistance;
+
+        // Offset to the right for better visibility
+        Vector3 rightOffset = Vector3.Cross(Vector3.up, windDir).normalized * sideOffset;
+        spawnPos += rightOffset;
+
+        transform.position = spawnPos;
     }
+
 
     public void TriggerWindAnimation(Animator animator)
     {

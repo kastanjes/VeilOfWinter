@@ -1,3 +1,5 @@
+// Assets/Scripts/AutoWindController.cs
+
 using System.Collections;
 using UnityEngine;
 
@@ -45,6 +47,10 @@ public class AutoWindController : MonoBehaviour
             playerRigidbody = playerObject.GetComponent<Rigidbody>();
             playerAnimator = playerObject.GetComponent<Animator>();
             lastGroundedY = playerObject.transform.position.y;
+        }
+        else
+        {
+            Debug.LogWarning($"No GameObject with tag '{playerTag}' found.");
         }
 
         ScheduleNextGust();
@@ -118,7 +124,7 @@ public class AutoWindController : MonoBehaviour
         var velocityModule = windVisual.windParticles.velocityOverLifetime;
         velocityModule.enabled = true;
 
-        Vector3 windDir = windZone.transform.forward.normalized;
+        Vector3 windDir = -windVisual.transform.forward.normalized;
         float speed = 10f;
 
         velocityModule.x = new ParticleSystem.MinMaxCurve(windDir.x * speed);
@@ -131,13 +137,11 @@ public class AutoWindController : MonoBehaviour
         if (windVisual == null || playerObject == null || windZone == null)
             return;
 
-        Vector3 windDir = windZone.transform.forward;
+        Vector3 windDir = -windZone.transform.forward;
         windDir.y = 0;
         windDir.Normalize();
 
-        Vector3 spawnPos = playerObject.transform.position + windDir * 2.5f;
-        windVisual.transform.position = spawnPos;
-        windVisual.transform.rotation = Quaternion.LookRotation(windDir);
+        windVisual.PositionFX(playerObject.transform.position, windDir, -2.5f, 1f);
     }
 
     private void ScheduleNextGust()
@@ -148,7 +152,10 @@ public class AutoWindController : MonoBehaviour
     public void TriggerGustManually()
     {
         if (!isGustActive)
+        {
+            StopAllCoroutines();
             StartCoroutine(TriggerWindGust());
+        }
     }
 
     void OnDrawGizmos()
