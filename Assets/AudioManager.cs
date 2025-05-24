@@ -6,12 +6,14 @@ using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
-
     public Sound[] sounds;
-
     public static AudioManager instance;
 
-    // Start is called before the first frame update
+    [Header("Global Volume Control")]
+    public AudioMixer audioMixer;
+    [Range(0.0001f, 1f)]
+    public float masterVolume = 1f;
+
     void Awake()
     {
         if (instance == null)
@@ -28,16 +30,16 @@ public class AudioManager : MonoBehaviour
         {
             s.source = gameObject.AddComponent<AudioSource>();
             s.source.clip = s.clip;
-
             s.source.volume = s.volume;
             s.source.pitch = s.pitch;
             s.source.loop = s.loop;
+            s.source.outputAudioMixerGroup = audioMixer.FindMatchingGroups("Master")[0];
         }
-
     }
 
     void Start()
     {
+        SetMasterVolume(masterVolume);
         Play("Theme");
     }
 
@@ -49,11 +51,9 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-
         s.source.Play();
     }
 
-    // Ny PlayOneShot metode
     public void PlayOneShot(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -62,49 +62,52 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-
-        // PlayOneShot afspiller lyden én gang uden at afbryde andre lyde
         s.source.PlayOneShot(s.source.clip, s.volume);
     }
-    
 
-void OnEnable()
-{
-    SceneManager.sceneLoaded += OnSceneLoaded;
-}
-
-void OnDisable()
-{
-    SceneManager.sceneLoaded -= OnSceneLoaded;
-}
-
-void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-{
-    if (scene.name == "EndScene")
+    void OnEnable()
     {
-        StartCoroutine(FadeOutAndPlayNew("Theme", "EndTheme"));
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
-}
 
-public IEnumerator FadeOutAndPlayNew(string oldTrack, string newTrack)
-{
-    Sound oldSound = Array.Find(sounds, s => s.name == oldTrack);
-    if (oldSound != null)
+    void OnDisable()
     {
-        float startVolume = oldSound.source.volume;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
-        while (oldSound.source.volume > 0.01f)
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "EndScene")
         {
-            oldSound.source.volume -= startVolume * Time.deltaTime / 2f;
-            yield return null;
+            StartCoroutine(FadeOutAndPlayNew("Theme", "EndTheme"));
+        }
+    }
+
+    public IEnumerator FadeOutAndPlayNew(string oldTrack, string newTrack)
+    {
+        Sound oldSound = Array.Find(sounds, s => s.name == oldTrack);
+        if (oldSound != null)
+        {
+            float startVolume = oldSound.source.volume;
+
+            while (oldSound.source.volume > 0.01f)
+            {
+                oldSound.source.volume -= startVolume * Time.deltaTime / 2f;
+                yield return null;
+            }
+
+            oldSound.source.Stop();
+            oldSound.source.volume = startVolume;
         }
 
-        oldSound.source.Stop();
-        oldSound.source.volume = startVolume;
+        yield return new WaitForSeconds(0.2f);
+        Play(newTrack);
     }
 
-    yield return new WaitForSeconds(0.2f);
-    Play(newTrack);
-}
-
+    public void SetMasterVolume(float value)
+    {
+        masterVolume = Mathf.Clamp(value, 0.0001f, 1f);
+        float volume = Mathf.Log10(masterVolume) * 20f;
+        audioMixer.SetFloat("MasterVolume", volume);
+    }
 }
