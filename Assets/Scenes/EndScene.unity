@@ -268026,15 +268026,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5575802786227792586, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.035404354
+      value: -0.035404168
       objectReference: {fileID: 0}
     - target: {fileID: 5575802786227792586, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.015042
+      value: -0.0150419995
       objectReference: {fileID: 0}
     - target: {fileID: 5575802786227792586, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.007430453
+      value: -0.00743045
       objectReference: {fileID: 0}
     - target: {fileID: 5710538616185629960, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -268582,7 +268582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3894608929373938005
 Transform:
   m_ObjectHideFlags: 0
@@ -269476,7 +269476,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 029746ed7fe84dc4d8b2004986db2ff0, type: 2}
+  - {fileID: 2100000, guid: 0c4be68cc90ee5c42baa37c0ed9a4b32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -269581,7 +269581,7 @@ MonoBehaviour:
   drawTripods: 0
   boneSize: 1
   tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
+  boneColor: {r: 0.4433962, g: 0.42078367, b: 0.056470275, a: 0.59607846}
   m_Transforms:
   - {fileID: 5936835479142175418}
 --- !u!4 &6430933830502416434
@@ -280575,7 +280575,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 029746ed7fe84dc4d8b2004986db2ff0, type: 2}
+  - {fileID: 2100000, guid: 0c4be68cc90ee5c42baa37c0ed9a4b32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -280693,7 +280693,7 @@ MonoBehaviour:
   drawTripods: 0
   boneSize: 1
   tripodSize: 1
-  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
+  boneColor: {r: 0.9523782, g: 0.9716981, b: 0.30709326, a: 0.5}
   m_Transforms:
   - {fileID: 3497591197889151815}
   - {fileID: 6856988190794441470}
@@ -280818,7 +280818,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 029746ed7fe84dc4d8b2004986db2ff0, type: 2}
+  - {fileID: 2100000, guid: 0c4be68cc90ee5c42baa37c0ed9a4b32, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
