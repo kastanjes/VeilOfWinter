@@ -3,8 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-
-
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
 {
@@ -12,7 +10,6 @@ public class CharacterMovement : MonoBehaviour
     Rigidbody rb;
     CharacterAnimation characterAnimation;
 
-    // Erstat AudioManager referencer med AudioSource
     [SerializeField] private AudioSource footstepsAudioSource;
 
     [Header("Movement Settings")]
@@ -27,9 +24,8 @@ public class CharacterMovement : MonoBehaviour
     [Header("Wind Settings")]
     public float windBackwardsForce = 15f;
     public float forwardJumpForceReduction = 0.7f;
-    // Nye variabler for crouch
     public bool canCrouch = true;
-    public float crouchWindResistance = 0.05f; // Kun 5% vindpåvirkning når crouched
+    public float crouchWindResistance = 0.05f;
 
     [Header("Ice Settings")]
     public float iceSpeedMultiplier = 1.8f;
@@ -40,7 +36,6 @@ public class CharacterMovement : MonoBehaviour
     public CanvasGroup blackOverlay;
     public float fadeDuration = 1f;
 
-
     private bool isGrounded;
     private bool jumpTriggered = false;
     private bool isInWindGust = false;
@@ -48,70 +43,61 @@ public class CharacterMovement : MonoBehaviour
     private bool windAnimationTriggered = false;
     private WindZone windZone;
     private Vector3 slidingDirection;
-    private bool isCrouching = false; // Crouch-tilstand
-
+    private bool isCrouching = false;
     private bool isPickingUpTorch = false;
-
     private bool wasMovingLastFrame = false;
     private Quaternion lastRotationBeforeStop;
-
+    private bool isRespawning = false;
+    private bool isDead = false; // 🆕 Ny variabel til at tracke død-tilstand
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         characterAnimation = GetComponent<CharacterAnimation>();
-
         windZone = FindObjectOfType<WindZone>();
         slidingDirection = Vector3.zero;
 
-        // Tjek om AudioSource er tildelt
         if (footstepsAudioSource == null)
         {
-            Debug.LogError("Footsteps AudioSource er ikke tildelt! Tilføj en AudioSource komponent til spilleren og træk den til dette felt i inspektoren.");
-            // Forsøg at finde eller tilføje en
+            Debug.LogError("Footsteps AudioSource er ikke tildelt!");
             footstepsAudioSource = GetComponent<AudioSource>();
             if (footstepsAudioSource == null)
             {
                 footstepsAudioSource = gameObject.AddComponent<AudioSource>();
-                Debug.Log("AudioSource automatisk tilføjet til spilleren.");
             }
         }
 
-        // Sørg for at AudioSource er konfigureret korrekt
         footstepsAudioSource.loop = true;
         footstepsAudioSource.playOnAwake = false;
     }
 
     void Update()
     {
-        if (!canMove) return;
+        // 🔥 VIGTIG: Stop al input hvis død eller respawning
+        if (!canMove || isRespawning || isDead) return;
 
-        // Ground check
         CheckGroundedAndSurface();
 
-        // Wind gust check
         if (windZone != null)
             isInWindGust = windZone.windMain > 10.0f;
 
         if (!isInWindGust)
             windAnimationTriggered = false;
 
-        // Crouch håndtering med korrekt animation parameter
+        // Crouch håndtering
         if (Input.GetKeyDown(KeyCode.LeftControl) && canCrouch && isGrounded)
         {
             isCrouching = true;
             animator.SetBool("IsCrouching", true);
-            Debug.Log("CROUCH AKTIVERET");
         }
         else if (Input.GetKeyUp(KeyCode.LeftControl) && canCrouch)
         {
             isCrouching = false;
             animator.SetBool("IsCrouching", false);
-            Debug.Log("CROUCH DEAKTIVERET");
         }
 
-        // Jump - kan ikke hoppe mens crouched
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !jumpTriggered && !isCrouching)
         {
             HandleJumping();
@@ -120,9 +106,14 @@ public class CharacterMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!canMove || isPickingUpTorch) return;
-        Debug.Log($"canMove={canMove}, velocity={rb.velocity}, grounded={isGrounded}");
-
+        // 🔥 VIGTIG: Stop al bevægelse og vindpåvirkning hvis død eller respawning
+        if (!canMove || isPickingUpTorch || isRespawning || isDead || rb.isKinematic) 
+        {
+            // Stop fodtrinslyd når inaktiv
+            if (footstepsAudioSource.isPlaying)
+                footstepsAudioSource.Stop();
+            return;
+        }
 
         float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
         float sideways = Input.GetKey(KeyCode.S) ? 1 : Input.GetKey(KeyCode.W) ? -1 : 0;
@@ -130,35 +121,23 @@ public class CharacterMovement : MonoBehaviour
         Vector3 moveDirection = new Vector3(sideways, 0, forward).normalized;
         float actualSpeed = maxMoveSpeed * characterAnimation.velocity;
 
-        // Helt ny vindlogik med stærk reduktion for crouch
+        // Vindlogik - nu beskyttet mod respawn
         if (isInWindGust && windZone != null)
         {
-            // Drastisk reduktion af vindkraft når crouched
             if (isCrouching && isGrounded)
             {
-                // Næsten ingen vindpåvirkning når crouched
-                float crouchedWindForce = crouchWindResistance; // Meget lav værdi
-
-                // Anvend minimal vindkraft
+                float crouchedWindForce = crouchWindResistance;
                 rb.AddForce(windZone.transform.forward * -crouchedWindForce, ForceMode.Force);
-                Debug.Log("CROUCH VINDMODSTAND: Kraft reduceret til " + crouchedWindForce);
-
-                // Ingen vindanimation ved crouch
                 windAnimationTriggered = false;
             }
             else
             {
-                // Normal vindkraft når ikke crouched
                 float normalWindForce = isGrounded ? 2f : 4f;
-
-                // Anvend normal vindkraft
                 rb.AddForce(windZone.transform.forward * -normalWindForce, ForceMode.Force);
 
-                // Vis kun wind animation hvis ikke crouched
                 if (moveDirection.magnitude < 0.1f && isGrounded && !windAnimationTriggered)
                 {
                     animator.SetTrigger("Wind");
-                    Debug.Log("Player hit by wind");
                     windAnimationTriggered = true;
                 }
             }
@@ -175,71 +154,51 @@ public class CharacterMovement : MonoBehaviour
             }
         }
 
-        // NY FODTRIN LOGIK - mere direkte kontrol
+        // Fodtrinslyd
         bool hasMovementInput = moveDirection.magnitude > 0.1f;
-        bool shouldPlayFootsteps = isGrounded && !jumpTriggered && hasMovementInput && !isPickingUpTorch && !isOnIce && !isCrouching;
+        bool shouldPlayFootsteps = isGrounded && !jumpTriggered && hasMovementInput && !isOnIce && !isCrouching;
 
-        // Kontrollerer fodtrinslyd baseret på bevægelse
         if (shouldPlayFootsteps)
         {
             if (!footstepsAudioSource.isPlaying)
-            {
                 footstepsAudioSource.Play();
-                Debug.Log("Fodtrin starter");
-            }
         }
         else
         {
             if (footstepsAudioSource.isPlaying)
-            {
                 footstepsAudioSource.Stop();
-                Debug.Log("Fodtrin stopper");
-            }
         }
 
+        // Rotation
         bool isCurrentlyMoving = moveDirection.magnitude >= 0.1f;
-
         if (isCurrentlyMoving)
         {
-            // Rotation while moving
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
-
             wasMovingLastFrame = true;
         }
         else
         {
-            // Just stopped moving
             if (wasMovingLastFrame)
             {
                 lastRotationBeforeStop = transform.rotation;
                 wasMovingLastFrame = false;
             }
-
-            // Keep last facing direction
             transform.rotation = lastRotationBeforeStop;
         }
-
-
-
     }
 
     private void CheckGroundedAndSurface()
     {
-        // Brug OverlapSphere for mere pålidelig detektion
         Vector3 spherePosition = transform.position - new Vector3(0, groundCheckDistance / 2, 0);
         float sphereRadius = 0.3f;
-
-        // Få alle colliders inden for sfæren
         Collider[] hitColliders = Physics.OverlapSphere(spherePosition, sphereRadius, groundLayer);
 
-        // Nulstil status
         isGrounded = hitColliders.Length > 0;
         isOnIce = false;
 
         if (isGrounded)
         {
-            // Check hvert objekt for is-tag
             foreach (Collider col in hitColliders)
             {
                 if (col.CompareTag(iceSurfaceTag))
@@ -248,7 +207,6 @@ public class CharacterMovement : MonoBehaviour
                     break;
                 }
             }
-
             jumpTriggered = false;
         }
     }
@@ -257,7 +215,6 @@ public class CharacterMovement : MonoBehaviour
     {
         FindObjectOfType<AudioManager>().PlayOneShot("Jump");
 
-        // Simple grundlæggende hop kraft
         Vector3 jumpVector = Vector3.up * jumpForce;
         float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
 
@@ -282,11 +239,9 @@ public class CharacterMovement : MonoBehaviour
         }
         else
         {
-            // Anvend altid basis-hop kraften
             rb.AddForce(jumpVector, ForceMode.Impulse);
         }
 
-        // Trigger animation
         animator.ResetTrigger("JumpTrigger");
         animator.SetTrigger("JumpTrigger");
         jumpTriggered = true;
@@ -294,9 +249,11 @@ public class CharacterMovement : MonoBehaviour
 
     private void ApplyNormalMovement(Vector3 moveDirection, float speed)
     {
-        // Reducér hastigheden når crouched
+        // 🔥 VIGTIG: Aldrig sæt velocity på kinematic rigidbody
+        if (rb.isKinematic) return;
+        
         if (isCrouching)
-            speed *= 0.5f; // Halv hastighed mens crouched
+            speed *= 0.5f;
 
         Vector3 moveVelocity = moveDirection * speed;
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
@@ -305,31 +262,27 @@ public class CharacterMovement : MonoBehaviour
 
     private void ApplyIceMovement(Vector3 moveDirection, float speed)
     {
-        // Reducér hastigheden når crouched (også på is)
+        // 🔥 VIGTIG: Aldrig sæt velocity på kinematic rigidbody
+        if (rb.isKinematic) return;
+        
         if (isCrouching)
             speed *= 0.5f;
 
         if (moveDirection.magnitude > 0.1f)
         {
-            // Gradvis ændring af glidningsretning baseret på input
-            float lerpFactor = 1 - iceSlideFactor; // 0.05 hvis iceSlideFactor er 0.95
+            float lerpFactor = 1 - iceSlideFactor;
             slidingDirection = Vector3.Lerp(slidingDirection, moveDirection, lerpFactor);
         }
         else if (slidingDirection.magnitude > 0.01f)
         {
-            // Gradvis aftagen af glidning når der ikke er input
             slidingDirection = Vector3.Lerp(slidingDirection, Vector3.zero, Time.deltaTime * 0.3f);
         }
 
-        // Anvend hastighedsmodifikatorer
         float speedModifier = iceSpeedMultiplier;
         if (isInWindGust)
             speedModifier *= 0.7f;
 
-        // Beregn endelig bevægelseshastighed
         Vector3 moveVelocity = slidingDirection * speed * speedModifier;
-
-        // Anvend hastighed
         rb.velocity = new Vector3(moveVelocity.x, rb.velocity.y, moveVelocity.z);
     }
 
@@ -344,141 +297,128 @@ public class CharacterMovement : MonoBehaviour
         isPickingUpTorch = false;
         rb.isKinematic = false;
     }
-private bool isRespawning = false;
 
-public void DieAndRespawn()
-{
-    if (isRespawning) return;
-
-    isRespawning = true;
-    StartCoroutine(RespawnCoroutine());
-}
-
-
-
-private IEnumerator RespawnCoroutine()
-{
-    rb.isKinematic = true;
-    rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ;
-
-    animator.SetTrigger("Dying");
-
-        // Vent 3 sekunder før lydeffekt (samme timing som før)
-    yield return new WaitForSeconds(2.0f);
-    
-    // Afspil død/fald lydeffekten én gang med bedre timing
-    FindObjectOfType<AudioManager>().PlayOneShot("PlayerFall");
-
-    // Wait for Dying animation to start
-    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
-        yield return null;
-
-    // Wait for Dying animation to finish
-    while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
-        yield return null;
-
-// 🔲 Fade to black
-yield return StartCoroutine(FadeBlackOverlay(true));
-
-// 🧠 Check if the player should go to the end scene instead of respawning
-if (EndSceneTrigger.playerEnteredEndZone)
-{
-    Debug.Log("Triggering end cutscene instead of respawning.");
-    SceneManager.LoadScene("EndScene");
-
-    yield break; // Stop the coroutine here
-}
-
-
-    // Move to respawn point
-    Vector3 respawnPoint = RespawnManager.Instance != null
-        ? RespawnManager.Instance.GetRespawnPoint()
-        : transform.position;
-
-    transform.position = respawnPoint;
-    transform.position += Vector3.up * 0.5f;
-
-    rb.isKinematic = false;
-    rb.constraints &= ~(
-        RigidbodyConstraints.FreezePositionX |
-        RigidbodyConstraints.FreezePositionY |
-        RigidbodyConstraints.FreezePositionZ
-    );
-    rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
-    // ▶️ Play respawn animation
-    animator.SetTrigger("Respawning");
-    
-
-    // Wait for "Respawning" to start
-    while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
-        yield return null;
-
-// Wait until animation finishes
-while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.1f)
-    yield return null;
-
-// ✅ First: Reactivate torch and vignette immediately
-TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
-if (torch != null)
-{
-    torch.ReactivateTorchParticles();
-}
-
-TorchVignette vignette = FindObjectOfType<TorchVignette>();
-if (vignette != null)
-{
-    vignette.ResetVignette();
-}
-
-// 🔲 Then: Fade back in faster (optional: 1s instead of 2s)
-yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
-
-
-    isRespawning = false;
-
-    Debug.Log("Player respawned.");
-}
-
-
-
-private IEnumerator FadeBlackOverlay(bool fadeIn, float duration = 1f)
-{
-    float t = 0f;
-    float startAlpha = blackOverlay.alpha;
-    float targetAlpha = fadeIn ? 1f : 0f;
-
-    // Always ensure the object is active before starting a fade
-    if (!blackOverlay.gameObject.activeSelf)
-        blackOverlay.gameObject.SetActive(true);
-
-    while (t < duration)
+    public void DieAndRespawn()
     {
-        t += Time.deltaTime;
-        float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / duration);
-        blackOverlay.alpha = alpha;
-        yield return null;
+        // 🔥 VIGTIG: Beskyt mod multiple calls
+        if (isRespawning || isDead) return;
+
+        Debug.Log("DieAndRespawn called - starting respawn process");
+        isRespawning = true;
+        isDead = true; // 🆕 Markér som død
+        StartCoroutine(RespawnCoroutine());
     }
 
-    blackOverlay.alpha = targetAlpha;
-
-    // Deactivate the black overlay *only* after fade-out
-    if (!fadeIn)
+    private IEnumerator RespawnCoroutine()
     {
-        blackOverlay.gameObject.SetActive(false);
+        // 🔥 VIGTIG: Stop al bevægelse og vindpåvirkning ØJEBLIKKELIGT
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        rb.isKinematic = true;
+        rb.constraints = RigidbodyConstraints.FreezeAll; // 🆕 Frys ALT
+
+        // Stop alle lyde
+        if (footstepsAudioSource.isPlaying)
+            footstepsAudioSource.Stop();
+
+        animator.SetTrigger("Dying");
+
+        yield return new WaitForSeconds(2.0f);
+        
+        FindObjectOfType<AudioManager>().PlayOneShot("PlayerFall");
+
+        // Vent på dying animation
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
+            yield return null;
+
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
+            yield return null;
+
+        // Fade to black
+        yield return StartCoroutine(FadeBlackOverlay(true));
+
+        // Check for end scene
+        if (EndSceneTrigger.playerEnteredEndZone)
+        {
+            Debug.Log("Triggering end cutscene instead of respawning.");
+            SceneManager.LoadScene("EndScene");
+            yield break;
+        }
+
+        // Move to respawn point
+        Vector3 respawnPoint = RespawnManager.Instance != null
+            ? RespawnManager.Instance.GetRespawnPoint()
+            : transform.position;
+
+        transform.position = respawnPoint + Vector3.up * 0.5f;
+
+        // 🔥 VIGTIG: Reset rigidbody korrekt
+        rb.isKinematic = false;
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        // Reset states
+        isDead = false; // 🆕 Spilleren er ikke længere død
+        isCrouching = false;
+        animator.SetBool("IsCrouching", false);
+        
+        animator.SetTrigger("Respawning");
+
+        // Vent på respawn animation
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
+            yield return null;
+
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.1f)
+            yield return null;
+
+        // Reaktivér torch
+        TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
+        if (torch != null)
+            torch.ReactivateTorchParticles();
+
+        TorchVignette vignette = FindObjectOfType<TorchVignette>();
+        if (vignette != null)
+            vignette.ResetVignette();
+
+        yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
+
+        isRespawning = false;
+        Debug.Log("Player respawned successfully.");
     }
-}
 
+    private IEnumerator FadeBlackOverlay(bool fadeIn, float duration = 1f)
+    {
+        float t = 0f;
+        float startAlpha = blackOverlay.alpha;
+        float targetAlpha = fadeIn ? 1f : 0f;
 
+        if (!blackOverlay.gameObject.activeSelf)
+            blackOverlay.gameObject.SetActive(true);
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, targetAlpha, t / duration);
+            blackOverlay.alpha = alpha;
+            yield return null;
+        }
+
+        blackOverlay.alpha = targetAlpha;
+
+        if (!fadeIn)
+            blackOverlay.gameObject.SetActive(false);
+    }
     
-private void OnTriggerEnter(Collider other)
-{
-    if (other.CompareTag("Icicle"))
+    private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Player hit by icicle trigger. Respawning...");
-        DieAndRespawn();
+        // 🔥 VIGTIG: Beskyt mod multiple trigger calls
+        if (isRespawning || isDead) return;
+        
+        if (other.CompareTag("Icicle"))
+        {
+            Debug.Log("Player hit by icicle trigger. Respawning...");
+            DieAndRespawn();
+        }
     }
-}
-
-
 }

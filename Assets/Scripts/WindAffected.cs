@@ -24,7 +24,7 @@ public class OptimizedWindAffected : MonoBehaviour
         
         // Tilføj et lille forsinkelse, så ikke alle objekter opdateres samtidigt
         nextPhysicsUpdate = Time.time + Random.Range(0f, physicsUpdateRate);
-    }
+    } 
     
     void FixedUpdate()
     {

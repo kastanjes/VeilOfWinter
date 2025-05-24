@@ -19462,7 +19462,15 @@ PrefabInstance:
       objectReference: {fileID: 2031072607}
     - target: {fileID: 2050036581168217547, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
       propertyPath: windStormForce
-      value: 100
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 2050036581168217547, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
+      propertyPath: maxGustDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2050036581168217547, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
+      propertyPath: minGustDuration
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 2361129890634960571, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
       propertyPath: m_LocalPosition.x
@@ -19503,6 +19511,10 @@ PrefabInstance:
     - target: {fileID: 2361129890634960571, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3929563445541499422, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
+      propertyPath: m_WindMain
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4908607520854369086, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
       propertyPath: m_Name
@@ -261391,6 +261403,10 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1157975943547275185, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
+      propertyPath: windBackwardsForce
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157975943547275185, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: footstepsAudioSource
       value: 
       objectReference: {fileID: 1299136232}
@@ -261401,6 +261417,10 @@ PrefabInstance:
     - target: {fileID: 1157975943547275185, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: windBlockerLayer.m_Bits
       value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157975943547275185, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
+      propertyPath: forwardJumpForceReduction
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 1853152216809124704, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -261714,7 +261734,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 27.092009
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2360835307907897411, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
     m_RemovedGameObjects:
     - {fileID: 2893933244487095595, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
     m_AddedGameObjects:
