@@ -137,11 +137,7 @@ public class AutoWindController : MonoBehaviour
         if (windVisual == null || playerObject == null || windZone == null)
             return;
 
-        Vector3 windDir = -windZone.transform.forward;
-        windDir.y = 0;
-        windDir.Normalize();
-
-        windVisual.PositionFX(playerObject.transform.position, windDir, -2.5f, 1f);
+        windVisual.PositionFX(playerObject.transform.position);
     }
 
     private void ScheduleNextGust()

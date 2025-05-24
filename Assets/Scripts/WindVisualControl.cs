@@ -1,11 +1,17 @@
+// Assets/Scripts/WindVisualController.cs
+
 using System.Collections;
 using UnityEngine;
-
 
 public class WindVisualController : MonoBehaviour
 {
     public ParticleSystem windParticles;
     public AudioSource windAudio;
+
+    [Header("Manual Offset Settings")]
+    [Range(-10f, 10f)] public float verticalOffset = 1f;
+    [Range(-10f, 10f)] public float horizontalOffset = 5f;
+    [Range(-5f, 5f)] public float depthOffset = 0f;
 
     public void ShowWind()
     {
@@ -38,20 +44,12 @@ public class WindVisualController : MonoBehaviour
         vel.z = new ParticleSystem.MinMaxCurve(windDir.z * speed);
     }
 
-    public void PositionFX(Vector3 playerPosition, Vector3 windDir, float forwardDistance, float sideOffset = 1f)
+    public void PositionFX(Vector3 playerPosition)
     {
-        windDir.y = 0;
-        windDir.Normalize();
-
-        Vector3 spawnPos = playerPosition - windDir * forwardDistance;
-
-        // Offset to the right for better visibility
-        Vector3 rightOffset = Vector3.Cross(Vector3.up, windDir).normalized * sideOffset;
-        spawnPos += rightOffset;
-
+        Vector3 spawnPos = playerPosition;
+        spawnPos += new Vector3(horizontalOffset, verticalOffset, depthOffset);
         transform.position = spawnPos;
     }
-
 
     public void TriggerWindAnimation(Animator animator)
     {
@@ -61,4 +59,3 @@ public class WindVisualController : MonoBehaviour
         Debug.Log("Triggered Wind Animation");
     }
 }
-
