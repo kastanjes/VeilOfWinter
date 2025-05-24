@@ -23212,7 +23212,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -35370,7 +35370,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -140302,7 +140302,7 @@ Transform:
   m_GameObject: {fileID: 1139251555}
   serializedVersion: 2
   m_LocalRotation: {x: 0.036390886, y: -0.7061698, z: 0.036390886, w: 0.7061698}
-  m_LocalPosition: {x: 9.765401, y: 3.0112963, z: -3.961739}
+  m_LocalPosition: {x: 9.765401, y: 3.0112963, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -141307,7 +141307,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1147125001
 RectTransform:
   m_ObjectHideFlags: 0
@@ -141400,7 +141400,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 5
@@ -185232,8 +185232,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb3643c4060b0e547b3aa2f36e9e7acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxOffset: 0.4
-  smoothing: 1
+  maxOffset: 0.5
+  smoothing: 5
 --- !u!1 &1513893373
 GameObject:
   m_ObjectHideFlags: 0
@@ -262068,7 +262068,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3894608929373938005
 Transform:
   m_ObjectHideFlags: 0
