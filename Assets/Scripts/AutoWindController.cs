@@ -73,24 +73,23 @@ public class AutoWindController : MonoBehaviour
             StartCoroutine(TriggerWindGust());
     }
 
-    private void CheckPlayerAirborne()
+   private void CheckPlayerAirborne()
+{
+    bool isAirborne = (playerObject.transform.position.y - lastGroundedY) > airborneHeight;
+
+    if (!isAirborne)
+        lastGroundedY = playerObject.transform.position.y;
+
+    // FJERNET: Vindkraft håndteres nu i CharacterMovement
+    // Behold kun animation trigger
+    if (isAirborne && !wasAirborne)
     {
-        bool isAirborne = (playerObject.transform.position.y - lastGroundedY) > airborneHeight;
-
-        if (!isAirborne)
-            lastGroundedY = playerObject.transform.position.y;
-
-        if (isAirborne && !wasAirborne)
-        {
-            Vector3 windForce = windZone.transform.forward * windStormForce * airborneWindMultiplier;
-            playerRigidbody.AddForce(windForce * Time.deltaTime, ForceMode.Force);
-
-            if (playerAnimator != null)
-                playerAnimator.SetTrigger("Wind");
-        }
-
-        wasAirborne = isAirborne;
+        if (playerAnimator != null)
+            playerAnimator.SetTrigger("Wind");
     }
+
+    wasAirborne = isAirborne;
+}
 
     private IEnumerator TriggerWindGust()
     {
