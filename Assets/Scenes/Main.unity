@@ -19472,6 +19472,14 @@ PrefabInstance:
       propertyPath: minGustDuration
       value: 1.4
       objectReference: {fileID: 0}
+    - target: {fileID: 2050036581168217547, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
+      propertyPath: maxTimeBetweenGusts
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 2050036581168217547, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
+      propertyPath: minTimeBetweenGusts
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 2361129890634960571, guid: e6cefeee2a28a4a518f928bffcb86012, type: 3}
       propertyPath: m_LocalPosition.x
       value: 9.00891
