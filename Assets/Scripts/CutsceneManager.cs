@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Cinemachine;
+using Mono.Cecil.Cil;
 
 public class CutsceneManager : MonoBehaviour
 {
@@ -184,13 +185,13 @@ dialogueText2.gameObject.SetActive(true);
 continuePrompt.gameObject.SetActive(true);
 
 yield return ShowDialogue("??? : Follow the lights.", "GuidingLight");
-yield return ShowDialogue("Boy : Who... who's there?", "Player");
 yield return ShowDialogue("??? : I'll lead you home.", "GuidingLight");
-yield return ShowDialogue("Boy : ...but, who ar-", "Player");
+yield return ShowDialogue("Boy : ...Okay", "Player");
 
 
-// (Optional) disable text afterwards
-dialogueText2.gameObject.SetActive(false);
+
+        // (Optional) disable text afterwards
+        dialogueText2.gameObject.SetActive(false);
 continuePrompt.gameObject.SetActive(false);
 
 guidingLight.GetComponent<GuidingLightPath>().enabled = false;
@@ -366,20 +367,19 @@ IEnumerator ShowDialogue(string text, string speaker = "Default")
 
     private readonly string[] introDialogueLines = new string[]
     {
-        "I fell asleep...",
-        "My torch has gone out",
+        "I must’ve dozed off...",
+        "The torch… it’s gone out.",
+        "It’s so dark.",
+        "The storm’s getting worse...",
+        "I shouldn´t have come here alone",
         "...",
-        "What time is it?",
-        "The storm has picked up",
-        "...",
-        "I need to get home"
+        "I need to get home…"
     };
 
 
 private readonly string[] guidingLightDialogueLines = new string[]
 {
     "??? : Follow the lights.",
-    "Player : Who... who's there?",
     "??? : I'll lead you home.",
     "Player : ...Okay."
 };
