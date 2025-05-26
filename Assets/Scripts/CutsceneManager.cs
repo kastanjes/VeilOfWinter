@@ -184,8 +184,8 @@ yield return StartCoroutine(MovePlayerAlongCutscenePath(playerAnimator.transform
 dialogueText2.gameObject.SetActive(true);
 continuePrompt.gameObject.SetActive(true);
 
-yield return ShowDialogue("??? : Follow the lights.", "GuidingLight");
-yield return ShowDialogue("??? : I'll lead you home.", "GuidingLight");
+yield return ShowDialogue("??? : Stay close to the lights", "GuidingLight");
+yield return ShowDialogue("??? : They’ll guide you home..", "GuidingLight");
 yield return ShowDialogue("Boy : ...Okay", "Player");
 
 
@@ -367,21 +367,23 @@ IEnumerator ShowDialogue(string text, string speaker = "Default")
 
     private readonly string[] introDialogueLines = new string[]
     {
-        "I must’ve dozed off...",
-        "The torch… it’s gone out.",
-        "It’s so dark.",
-        "The storm’s getting worse...",
+        "I didn’t mean to fall asleep...",
+        "The torch… it has gone out.",
+        "It’s dark now.",
+        "The storm is getting worse...",
         "I shouldn´t have come here alone",
         "...",
+        "It's so cold",
         "I need to get home…"
     };
 
 
 private readonly string[] guidingLightDialogueLines = new string[]
 {
-    "??? : Follow the lights.",
-    "??? : I'll lead you home.",
-    "Player : ...Okay."
+    "??? : Stay close to the lights.",
+    "??? : They’ll guide you home.",
+    "Boy : ...Okay."
+
 };
 IEnumerator FadeInAndOutIntroUIPressE()
 {

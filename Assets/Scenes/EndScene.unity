@@ -123782,25 +123782,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueSequence:
   - speaker: GuidingLight
-    line: 'Mom: My sweet boy... Why have you stopped?'
+    line: 'Mom: There you are, my brave one. Why did you stop?'
     waitTime: 2
   - speaker: Player
-    line: 'Boy: I''m so tired, Mama, I''m so cold. I just... want you back'
-    waitTime: 3
+    line: "Boy: I'm so tired\u2026 and it\u2019s so cold. I just... I wish you were
+      here. \n\n"
+    waitTime: 1.5
   - speaker: Player
-    line: 'Boy: You''re not really here, you''re gone. I know you''re gone.'
+    line: "Boy: I wish that every day.  \n"
+    waitTime: 2
+  - speaker: Player
+    line: "Boy: But you\u2019re not. You're... gone.  \n"
     waitTime: 2
   - speaker: GuidingLight
-    line: 'Mom: Gone from sight, yes, but never gone. Never from you.'
+    line: "Mom: I\u2019m not here like before\u2026  \nBut I never left you.\n\n"
     waitTime: 2
   - speaker: Player
-    line: 'Boy: I can''t do this. I''m lost.'
+    line: "Boy: I don\u2019t know what to do... I just want you back.\n\n"
     waitTime: 1.5
   - speaker: GuidingLight
-    line: 'Mom: Look at me sweetheart, you can do this. Just a little farther.'
-    waitTime: 2
+    line: 'Mom: I know, sweetheart... but you have to keep going now. I''m with you.
+
+'
+    waitTime: 1.5
   - speaker: GuidingLight
-    line: 'Mom: Follow me.'
+    line: "Mom: Come. Let\u2019s go together.\n"
     waitTime: 1
   playerText: {fileID: 1093065439}
   guidingLightText: {fileID: 416767108}
@@ -178911,7 +178917,8 @@ MonoBehaviour:
     line: '???: Don''t you remember?'
     waitTime: 1
   - speaker: GuidingLight
-    line: '???: I promised you once, that I''d always be there for you in the dark.'
+    line: "???: I always said I\u2019d be there\u2026 even when the light fades. 
+      \n"
     waitTime: 2
   - speaker: Player
     line: 'Boy: ...'
