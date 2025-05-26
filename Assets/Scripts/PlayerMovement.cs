@@ -86,12 +86,12 @@ public class CharacterMovement : MonoBehaviour
             windAnimationTriggered = false;
 
         // Crouch håndtering
-        if (Input.GetKeyDown(KeyCode.LeftControl) && canCrouch && isGrounded)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canCrouch && isGrounded)
         {
             isCrouching = true;
             animator.SetBool("IsCrouching", true);
         }
-        else if (Input.GetKeyUp(KeyCode.LeftControl) && canCrouch)
+        else if (Input.GetKeyUp(KeyCode.LeftShift) && canCrouch)
         {
             isCrouching = false;
             animator.SetBool("IsCrouching", false);
