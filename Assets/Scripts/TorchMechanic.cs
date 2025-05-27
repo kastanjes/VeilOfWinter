@@ -16,7 +16,8 @@ public class TorchMechanic : MonoBehaviour
     private bool isPickingUp = false;
 
     public GameObject objectToDisableOnFirstLight; // Assign in inspector
-    private static bool torchLitOnce = false; // Tracks if it's the first time
+private static bool torchLitOnce = false; // Tracks if it's the first time
+
 
     void Start()
     {
@@ -112,15 +113,16 @@ public class TorchMechanic : MonoBehaviour
                 isLit = false;
                 Debug.Log("Torch faded out.");
 
-                if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+            if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
+            {
+                GameObject player = GameObject.FindWithTag("Player");
+                if (player != null)
                 {
-                    GameObject player = GameObject.FindWithTag("Player");
-                    if (player != null)
-                    {
-                        var movement = player.GetComponent<CharacterMovement>();
-                        if (movement != null) movement.DieAndRespawn();
-                    }
+                    var movement = player.GetComponent<CharacterMovement>();
+                    if (movement != null) movement.DieAndRespawn();
                 }
+            }
+
             }
         }
     }
@@ -141,51 +143,21 @@ public class TorchMechanic : MonoBehaviour
         }
 
         isLit = true;
-        
         if (!torchLitOnce)
-        {
-            torchLitOnce = true;
+{
+    torchLitOnce = true;
 
-            // 🔊 AFSPIL FIRESET LYDEFFEKT KUN FØRSTE GANG ILDEN TÆNDES
-            FindObjectOfType<AudioManager>().PlayOneShot("FireSet");
-            Debug.Log("Played FireSet sound for FIRST torch lighting.");
+        // 🔊 AFSPIL FIRESET LYDEFFEKT KUN FØRSTE GANG ILDEN TÆNDES
+        FindObjectOfType<AudioManager>().PlayOneShot("FireSet");
+        Debug.Log("Played FireSet sound for FIRST torch lighting.");
 
-            // 🔥 AKTIVÉR MULIGHEDEN FOR AT DØ OG SÆT FØRSTE RESPAWN POINT
-            GameObject player = GameObject.FindWithTag("Player");
-            if (player != null)
-            {
-                CharacterMovement movement = player.GetComponent<CharacterMovement>();
-                if (movement != null)
-                {
-                    // Get respawn position (samme logik som nedenfor)
-                    Vector3 respawnPosition;
-                    if (RespawnManager.Instance != null && torchInRange != null)
-                    {
-                        Transform marker = torchInRange.transform.Find("RespawnPoint");
-                        if (marker == null)
-                        {
-                            marker = torchInRange.GetComponentsInChildren<Transform>(true)
-                                .FirstOrDefault(t => t.name == "RespawnPoint");
-                        }
-                        Vector3 target = marker != null ? marker.position : torchInRange.transform.position;
-                        respawnPosition = RaycastToGround(target);
-                    }
-                    else
-                    {
-                        respawnPosition = transform.position;
-                    }
+    if (objectToDisableOnFirstLight != null)
+    {
+        objectToDisableOnFirstLight.SetActive(false);
+        Debug.Log("Disabled first-time object after relighting torch.");
+    }
+}
 
-                    movement.OnFirstTorchCollected(respawnPosition);
-                    Debug.Log("First torch collected! Death enabled and respawn point set.");
-                }
-            }
-
-            if (objectToDisableOnFirstLight != null)
-            {
-                objectToDisableOnFirstLight.SetActive(false);
-                Debug.Log("Disabled first-time object after relighting torch.");
-            }
-        }
 
         if (RespawnManager.Instance != null && torchInRange != null)
         {
@@ -207,6 +179,7 @@ public class TorchMechanic : MonoBehaviour
 
         Debug.Log("Torch re-lit and respawn point set.");
     }
+
 
     void OnTriggerEnter(Collider other)
     {
@@ -246,15 +219,16 @@ public class TorchMechanic : MonoBehaviour
     }
     
     public void ReactivateTorchParticles()
+{
+    foreach (var ps in torchParticles)
     {
-        foreach (var ps in torchParticles)
-        {
-            ps.Play();
-            var m = ps.main;
-            m.startSize = startSize;
-        }
-
-        isLit = true;
-        Debug.Log("Torch particles reactivated after respawn.");
+        ps.Play();
+        var m = ps.main;
+        m.startSize = startSize;
     }
+
+    isLit = true;
+    Debug.Log("Torch particles reactivated after respawn.");
+}
+
 }
