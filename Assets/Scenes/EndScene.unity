@@ -268035,15 +268035,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5575802786227792586, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.035404168
+      value: -0.035404354
       objectReference: {fileID: 0}
     - target: {fileID: 5575802786227792586, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0150419995
+      value: -0.015042
       objectReference: {fileID: 0}
     - target: {fileID: 5575802786227792586, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.00743045
+      value: -0.007430453
       objectReference: {fileID: 0}
     - target: {fileID: 5710538616185629960, guid: b088a7eb2a78c5d44acd10a81d6a0bf9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -269590,7 +269590,7 @@ MonoBehaviour:
   drawTripods: 0
   boneSize: 1
   tripodSize: 1
-  boneColor: {r: 0.4433962, g: 0.42078367, b: 0.056470275, a: 0.59607846}
+  boneColor: {r: 0.4433962, g: 0.42078367, b: 0.056470275, a: 0.21960784}
   m_Transforms:
   - {fileID: 5936835479142175418}
 --- !u!4 &6430933830502416434
@@ -280702,7 +280702,7 @@ MonoBehaviour:
   drawTripods: 0
   boneSize: 1
   tripodSize: 1
-  boneColor: {r: 0.9523782, g: 0.9716981, b: 0.30709326, a: 0.5}
+  boneColor: {r: 0, g: 0.101481915, b: 1, a: 1}
   m_Transforms:
   - {fileID: 3497591197889151815}
   - {fileID: 6856988190794441470}
