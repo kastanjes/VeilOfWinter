@@ -233911,7 +233911,7 @@ MonoBehaviour:
     pitch: 1
     loop: 1
     source: {fileID: 0}
-  audioMixer: {fileID: 0}
+  audioMixer: {fileID: 24100000, guid: 909d85ff309e546cd90d7101170dd02a, type: 2}
   masterVolume: 1
 --- !u!4 &2024088899
 Transform:
