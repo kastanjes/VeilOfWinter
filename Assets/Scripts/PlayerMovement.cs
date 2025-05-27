@@ -80,7 +80,7 @@ public class CharacterMovement : MonoBehaviour
         CheckGroundedAndSurface();
 
         if (windZone != null)
-            isInWindGust = windZone.windMain > 10.0f;
+            isInWindGust = windZone.windMain > 12.0f;
 
         if (!isInWindGust)
             windAnimationTriggered = false;
@@ -107,7 +107,7 @@ public class CharacterMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Stop al bevægelse hvis død, respawning eller picking up torch
-        if (!canMove || isPickingUpTorch || isRespawning || isDead || rb.isKinematic) 
+        if (!canMove || isPickingUpTorch || isRespawning || isDead || rb.isKinematic)
         {
             if (footstepsAudioSource.isPlaying)
                 footstepsAudioSource.Stop();
@@ -135,8 +135,8 @@ public class CharacterMovement : MonoBehaviour
             {
                 // Vindkraft kun på jorden - hop håndteres separat
                 Vector3 windDirection = windZone.transform.forward;
-                float windStrength = windBackwardsForce * 1.0f; // Øget fra 0.6f
-                
+                float windStrength = windBackwardsForce * 0.7f; // Øget fra 0.6f
+
                 rb.AddForce(windDirection * windStrength, ForceMode.Force);
 
                 if (moveDirection.magnitude < 0.1f && !windAnimationTriggered)
@@ -151,7 +151,7 @@ public class CharacterMovement : MonoBehaviour
                 Vector3 windDirection = windZone.transform.forward;
                 float airborneWindStrength = windBackwardsForce * 1.5f; // Meget kraftig
                 rb.AddForce(windDirection * airborneWindStrength, ForceMode.Force);
-                
+
                 Debug.Log("KRAFTIG VINDKRAFT I LUFTEN: " + (windDirection * airborneWindStrength));
             }
         }
@@ -188,7 +188,7 @@ public class CharacterMovement : MonoBehaviour
         // Rotation (RETTET: Ingen rotation under vindstød)
         bool isCurrentlyMoving = moveDirection.magnitude >= 0.1f;
         bool shouldRotate = isCurrentlyMoving && !isInWindGust; // Ingen rotation under vindstød
-        
+
         if (shouldRotate)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
@@ -234,16 +234,16 @@ public class CharacterMovement : MonoBehaviour
         FindObjectOfType<AudioManager>().PlayOneShot("Jump");
 
         Vector3 jumpVector = Vector3.up * jumpForce;
-        
+
         if (isInWindGust && windZone != null)
         {
             // UNDER VINDSTØD: Ignorer fremad-input og tilføj kraftig vindkraft
             Vector3 windDirection = windZone.transform.forward;
-            Vector3 windForce = windDirection * windBackwardsForce * 1.5f; // Reduceret fra 2.0f
-            
+            Vector3 windForce = windDirection * windBackwardsForce * 1.5f;
+
             // Kombiner hop og vind til ÉN kraft (ingen fremad-input)
             Vector3 combinedForce = jumpVector + windForce;
-            
+
             rb.AddForce(combinedForce, ForceMode.Impulse);
             Debug.Log("VINDSTØD HOP (ingen fremad): Up=" + jumpVector + " + Wind=" + windForce + " = " + combinedForce);
         }
@@ -251,13 +251,13 @@ public class CharacterMovement : MonoBehaviour
         {
             // UDEN VINDSTØD: Normal hop med fremad-input
             float forward = Input.GetKey(KeyCode.D) ? 1 : Input.GetKey(KeyCode.A) ? -1 : 0;
-            
+
             Vector3 forwardMovement = Vector3.zero;
             if (forward != 0)
             {
                 forwardMovement = transform.forward * (forward * maxMoveSpeed * forwardJumpForceReduction);
             }
-            
+
             Vector3 combinedForce = jumpVector + forwardMovement;
             rb.AddForce(combinedForce, ForceMode.Impulse);
             Debug.Log("NORMAL HOP med fremad: " + combinedForce);
@@ -271,7 +271,7 @@ public class CharacterMovement : MonoBehaviour
     private void ApplyNormalMovement(Vector3 moveDirection, float speed)
     {
         if (rb.isKinematic) return;
-        
+
         if (isCrouching)
             speed *= 0.5f;
 
@@ -283,7 +283,7 @@ public class CharacterMovement : MonoBehaviour
     private void ApplyIceMovement(Vector3 moveDirection, float speed)
     {
         if (rb.isKinematic) return;
-        
+
         if (isCrouching)
             speed *= 0.5f;
 
@@ -343,7 +343,7 @@ public class CharacterMovement : MonoBehaviour
         animator.SetTrigger("Dying");
 
         yield return new WaitForSeconds(2.0f);
-        
+
         FindObjectOfType<AudioManager>().PlayOneShot("PlayerFall");
 
         // Vent på dying animation
@@ -381,7 +381,7 @@ public class CharacterMovement : MonoBehaviour
         isDead = false;
         isCrouching = false;
         animator.SetBool("IsCrouching", false);
-        
+
         animator.SetTrigger("Respawning");
 
         // Vent på respawn animation
@@ -395,10 +395,6 @@ public class CharacterMovement : MonoBehaviour
         TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
         if (torch != null)
             torch.ReactivateTorchParticles();
-
-        TorchVignette vignette = FindObjectOfType<TorchVignette>();
-        if (vignette != null)
-            vignette.ResetVignette();
 
         yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
 
@@ -428,12 +424,12 @@ public class CharacterMovement : MonoBehaviour
         if (!fadeIn)
             blackOverlay.gameObject.SetActive(false);
     }
-    
+
     private void OnTriggerEnter(Collider other)
     {
         // Beskyt mod multiple trigger calls
         if (isRespawning || isDead) return;
-        
+
         if (other.CompareTag("Icicle"))
         {
             Debug.Log("Player hit by icicle trigger. Respawning...");
