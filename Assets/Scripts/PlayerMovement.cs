@@ -49,6 +49,7 @@ public class CharacterMovement : MonoBehaviour
     private Quaternion lastRotationBeforeStop;
     private bool isRespawning = false;
     private bool isDead = false;
+    private bool hasCollectedFirstTorch = false; // Kan kun dø efter første torch er samlet
 
     void Start()
     {
@@ -319,6 +320,13 @@ public class CharacterMovement : MonoBehaviour
 
     public void DieAndRespawn()
     {
+        // Kan kun dø efter første torch er samlet
+        if (!hasCollectedFirstTorch)
+        {
+            Debug.Log("Cannot die - first torch not collected yet");
+            return;
+        }
+        
         // Beskyt mod multiple calls
         if (isRespawning || isDead) return;
 
@@ -330,6 +338,8 @@ public class CharacterMovement : MonoBehaviour
 
     private IEnumerator RespawnCoroutine()
     {
+        Debug.Log("RespawnCoroutine: Starting...");
+        
         // Stop al bevægelse og vindpåvirkning ØJEBLIKKELIGT
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
@@ -340,22 +350,28 @@ public class CharacterMovement : MonoBehaviour
         if (footstepsAudioSource.isPlaying)
             footstepsAudioSource.Stop();
 
+        Debug.Log("RespawnCoroutine: Triggering dying animation...");
         animator.SetTrigger("Dying");
 
         yield return new WaitForSeconds(2.0f);
+        Debug.Log("RespawnCoroutine: 2 second wait complete, playing PlayerFall sound...");
         
         FindObjectOfType<AudioManager>().PlayOneShot("PlayerFall");
 
+        Debug.Log("RespawnCoroutine: Waiting for dying animation to start...");
         // Vent på dying animation
         while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dying"))
             yield return null;
 
+        Debug.Log("RespawnCoroutine: Dying animation started, waiting for completion...");
         while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1f)
             yield return null;
 
+        Debug.Log("RespawnCoroutine: Dying animation complete, starting fade to black...");
         // Fade to black
         yield return StartCoroutine(FadeBlackOverlay(true));
 
+        Debug.Log("RespawnCoroutine: Fade to black complete, checking end scene...");
         // Check for end scene
         if (EndSceneTrigger.playerEnteredEndZone)
         {
@@ -364,19 +380,23 @@ public class CharacterMovement : MonoBehaviour
             yield break;
         }
 
+        Debug.Log("RespawnCoroutine: Getting respawn point...");
         // Move to respawn point
         Vector3 respawnPoint = RespawnManager.Instance != null
             ? RespawnManager.Instance.GetRespawnPoint()
             : transform.position;
 
+        Debug.Log($"RespawnCoroutine: Moving to respawn point: {respawnPoint}");
         transform.position = respawnPoint + Vector3.up * 0.5f;
 
+        Debug.Log("RespawnCoroutine: Resetting rigidbody...");
         // Reset rigidbody korrekt
         rb.isKinematic = false;
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
+        Debug.Log("RespawnCoroutine: Resetting states and triggering respawn animation...");
         // Reset states
         isDead = false;
         isCrouching = false;
@@ -384,30 +404,85 @@ public class CharacterMovement : MonoBehaviour
         
         animator.SetTrigger("Respawning");
 
-        // Vent på respawn animation
-        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning"))
+        Debug.Log("RespawnCoroutine: Waiting for respawn animation to start...");
+        // Vent på respawn animation med timeout
+        float waitTime = 0f;
+        while (!animator.GetCurrentAnimatorStateInfo(0).IsName("Respawning") && waitTime < 5f)
+        {
+            waitTime += Time.deltaTime;
             yield return null;
+        }
 
-        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.1f)
-            yield return null;
+        if (waitTime >= 5f)
+        {
+            Debug.LogWarning("Respawn animation never started! Forcing to IdleLoop...");
+            animator.Play("IdleLoop");
+        }
+        else
+        {
+            Debug.Log("RespawnCoroutine: Respawn animation started, waiting for completion...");
+            waitTime = 0f;
+            while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.1f && waitTime < 5f)
+            {
+                waitTime += Time.deltaTime;
+                yield return null;
+            }
+            
+            if (waitTime >= 5f)
+            {
+                Debug.LogWarning("Respawn animation timeout! Forcing to IdleLoop...");
+                animator.Play("IdleLoop");
+            }
+        }
 
+        Debug.Log("RespawnCoroutine: Animation complete, reactivating torch...");
         // Reaktivér torch
         TorchMechanic torch = GetComponentInChildren<TorchMechanic>();
         if (torch != null)
             torch.ReactivateTorchParticles();
 
+        // Reset vignette EFTER fade tilbage til normal
+        // TorchVignette vignette = FindObjectOfType<TorchVignette>();
+        // if (vignette != null)
+        //     vignette.ResetVignette();
+
+        Debug.Log("RespawnCoroutine: Starting fade back to normal...");
+        yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
+
+        // Nu reset vignette EFTER blackOverlay er færdig
         TorchVignette vignette = FindObjectOfType<TorchVignette>();
         if (vignette != null)
             vignette.ResetVignette();
 
-        yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
-
         isRespawning = false;
-        Debug.Log("Player respawned successfully.");
+        Debug.Log("RespawnCoroutine: Player respawned successfully - COMPLETE!");
+    }
+
+    // Kaldes når spilleren samler den første torch
+    public void OnFirstTorchCollected(Vector3 torchPosition)
+    {
+        hasCollectedFirstTorch = true;
+        
+        // Sæt dette som første respawn point
+        if (RespawnManager.Instance != null)
+        {
+            RespawnManager.Instance.SetRespawnPoint(torchPosition);
+            Debug.Log($"First torch collected! Death enabled and respawn point set to: {torchPosition}");
+        }
+        else
+        {
+            Debug.LogWarning("RespawnManager.Instance is null when trying to set first torch respawn point!");
+        }
     }
 
     private IEnumerator FadeBlackOverlay(bool fadeIn, float duration = 1f)
     {
+        if (blackOverlay == null)
+        {
+            Debug.LogWarning("BlackOverlay is null! Skipping fade.");
+            yield break;
+        }
+
         float t = 0f;
         float startAlpha = blackOverlay.alpha;
         float targetAlpha = fadeIn ? 1f : 0f;
