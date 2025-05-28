@@ -17,6 +17,7 @@ public class CutsceneManager : MonoBehaviour
     [Header("Guiding Light")]
 
     [SerializeField] private GuidingLightController guidingLight;
+    public GameObject guidingLightGO;
 
 
 
@@ -76,6 +77,7 @@ public class CutsceneManager : MonoBehaviour
         blackOverlay.gameObject.SetActive(false);
         windzone.gameObject.SetActive(false);
         gameManager.gameObject.SetActive(false);
+        guidingLightGO.gameObject.SetActive(false);
         
         windAudio = howlingWindSound.GetComponent<AudioSource>();
         windAudio.Stop(); // Ensure it's not playing at the beginning
@@ -129,8 +131,8 @@ public class CutsceneManager : MonoBehaviour
         
         dialogueText.gameObject.SetActive(true);
         continuePrompt.gameObject.SetActive(true);
-
         windzone.gameObject.SetActive(true);
+        guidingLightGO.gameObject.SetActive(true);
 
 
 
@@ -186,7 +188,7 @@ continuePrompt.gameObject.SetActive(true);
 
 yield return ShowDialogue("??? : Follow the lights.","GuidingLight");
 yield return ShowDialogue("Boy : Who... who's there?", "Player");
-yield return ShowDialogue("??? : i’ll lead you home..", "GuidingLight");
+yield return ShowDialogue("??? : I will lead you home...", "GuidingLight");
 
 
 
@@ -367,13 +369,12 @@ IEnumerator ShowDialogue(string text, string speaker = "Default")
 
     private readonly string[] introDialogueLines = new string[]
     {
-        "I didn’t mean to fall asleep...",
-        "The torch… it has gone out.",
+        "I fell asleep...",
+        "My torch… it's gone out.",
         "It’s dark now.",
-        "The storm is getting worse...",
+        "The storm has gotten worse...",
         "I shouldn't have come here alone",
         "...",
-        "It's so cold",
         "I need to get home…"
     };
 
@@ -383,7 +384,7 @@ IEnumerator ShowDialogue(string text, string speaker = "Default")
 
     "??? : Follow the lights.",
     "Boy : Who... who's there?",
-    "??? : i’ll lead you home.."
+    "??? : I will lead you home..."
 
     };
 

@@ -123741,31 +123741,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogueSequence:
   - speaker: GuidingLight
-    line: 'Mom: There you are, my brave one. Why did you stop?'
+    line: 'Mom: There you are, my sweet boy. Why did you stop?'
     waitTime: 2
   - speaker: Player
-    line: "Boy: I'm so tired\u2026 and it\u2019s so cold. I just... I wish you were
-      here. \n\n"
+    line: "Boy: I'm so tired\u2026 and it\u2019s so cold. I can't keep going. "
     waitTime: 1.5
   - speaker: Player
-    line: "Boy: I wish that every day.  \n"
+    line: "Boy: I wish you were really here.  \n"
     waitTime: 2
   - speaker: Player
     line: "Boy: But you\u2019re not. You're... gone.  \n"
     waitTime: 2
   - speaker: GuidingLight
-    line: "Mom: I\u2019m not here like before\u2026  \nBut I never left you.\n\n"
+    line: "Mom: I\u2019m not here like before\u2026  \nBut I'll always be with you.\n\n"
     waitTime: 2
   - speaker: Player
-    line: "Boy: I don\u2019t know what to do... I just want you back.\n\n"
+    line: "Boy: I don\u2019t know what to do without you...\n\n"
     waitTime: 1.5
   - speaker: GuidingLight
-    line: 'Mom: I know, sweetheart... but you have to keep going now. I''m with you.
+    line: 'Mom: I know, sweetheart... but you have to keep going.
 
 '
     waitTime: 1.5
   - speaker: GuidingLight
-    line: "Mom: Come. Let\u2019s go together.\n"
+    line: "Mom: I'm with you. Come, let\u2019s go together.\n"
     waitTime: 1
   playerText: {fileID: 1093065439}
   guidingLightText: {fileID: 416767108}
@@ -178876,8 +178875,7 @@ MonoBehaviour:
     line: '???: Don''t you remember?'
     waitTime: 1
   - speaker: GuidingLight
-    line: "???: I always said I\u2019d be there\u2026 even when the light fades. 
-      \n"
+    line: "???: I promised I'd never leave you alone in the dark.  \n"
     waitTime: 2
   - speaker: Player
     line: 'Boy: ...'

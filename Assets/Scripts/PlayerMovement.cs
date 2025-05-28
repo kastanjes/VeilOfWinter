@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Rigidbody))]
 public class CharacterMovement : MonoBehaviour
 {
+    public GameObject wind;
     Animator animator;
     Rigidbody rb;
     CharacterAnimation characterAnimation;
@@ -317,19 +318,23 @@ public class CharacterMovement : MonoBehaviour
         rb.isKinematic = false;
     }
 
-    public void DieAndRespawn()
-    {
-        // Beskyt mod multiple calls
-        if (isRespawning || isDead) return;
+public void DieAndRespawn()
+{
+    if (isRespawning || isDead) return;
 
-        Debug.Log("DieAndRespawn called - starting respawn process");
-        isRespawning = true;
-        isDead = true;
-        StartCoroutine(RespawnCoroutine());
-    }
+    if (wind != null)
+        wind.SetActive(false); // disable wind GameObject
+
+    Debug.Log("DieAndRespawn called - starting respawn process");
+    isRespawning = true;
+    isDead = true;
+    StartCoroutine(RespawnCoroutine());
+}
+
 
     private IEnumerator RespawnCoroutine()
     {
+        
         // Stop al bevægelse og vindpåvirkning ØJEBLIKKELIGT
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
@@ -398,7 +403,19 @@ public class CharacterMovement : MonoBehaviour
 
         yield return StartCoroutine(FadeBlackOverlay(false, 0.5f));
 
+        // Failsafe just in case something went wrong
+        if (blackOverlay.alpha > 0.01f)
+        {
+            blackOverlay.alpha = 0f;
+            blackOverlay.gameObject.SetActive(false);
+            Debug.LogWarning("Failsafe: Manually reset black overlay after fade.");
+        }
+
+
         isRespawning = false;
+        if (wind != null)
+    wind.SetActive(true); // re-enable wind when everything is done
+
         Debug.Log("Player respawned successfully.");
     }
 
@@ -436,4 +453,10 @@ public class CharacterMovement : MonoBehaviour
             DieAndRespawn();
         }
     }
+    
+    public bool IsDeadOrRespawning()
+{
+    return isDead || isRespawning;
+}
+
 }

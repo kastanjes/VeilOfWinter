@@ -16,7 +16,7 @@ public class TorchMechanic : MonoBehaviour
     private bool isPickingUp = false;
 
     public GameObject objectToDisableOnFirstLight; // Assign in inspector
-private static bool torchLitOnce = false; // Tracks if it's the first time
+    private static bool torchLitOnce = false; // Tracks if it's the first time
 
 
     void Start()
@@ -92,6 +92,7 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
 
         isPickingUp = false;
     }
+    [SerializeField] private CanvasGroup vignetteOverlay;
 
     public void Fading()
     {
@@ -100,6 +101,12 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
         if (main.startSize.constant > 0)
         {
             float newSize = Mathf.Max(0, main.startSize.constant - fadeRate * Time.deltaTime);
+
+            if (vignetteOverlay != null && torchLitOnce)
+            {
+                float normalized = Mathf.InverseLerp(0, startSize, newSize);
+                vignetteOverlay.alpha = 1f - normalized; // 0 when torch is full, 1 when almost out
+            }
 
             foreach (var ps in torchParticles)
             {
@@ -113,15 +120,17 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
                 isLit = false;
                 Debug.Log("Torch faded out.");
 
-            if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
-            {
-                GameObject player = GameObject.FindWithTag("Player");
-                if (player != null)
+                if (RespawnManager.Instance != null && RespawnManager.Instance.HasRespawnPoint())
                 {
-                    var movement = player.GetComponent<CharacterMovement>();
-                    if (movement != null) movement.DieAndRespawn();
+                    GameObject player = GameObject.FindWithTag("Player");
+                    if (player != null)
+                    {
+                        var movement = player.GetComponent<CharacterMovement>();
+                        if (movement != null && !movement.IsDeadOrRespawning())
+                            movement.DieAndRespawn();
+
+                    }
                 }
-            }
 
             }
         }
@@ -129,6 +138,11 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
 
     public void TorchPickup()
     {
+        if (vignetteOverlay != null)
+            if (vignetteOverlay != null)
+    StartCoroutine(FadeOutVignette());
+
+
         TorchVignette vignette = FindObjectOfType<TorchVignette>();
         if (vignette != null)
         {
@@ -144,19 +158,19 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
 
         isLit = true;
         if (!torchLitOnce)
-{
-    torchLitOnce = true;
+        {
+            torchLitOnce = true;
 
-        // 🔊 AFSPIL FIRESET LYDEFFEKT KUN FØRSTE GANG ILDEN TÆNDES
-        FindObjectOfType<AudioManager>().PlayOneShot("FireSet");
-        Debug.Log("Played FireSet sound for FIRST torch lighting.");
+            // 🔊 AFSPIL FIRESET LYDEFFEKT KUN FØRSTE GANG ILDEN TÆNDES
+            FindObjectOfType<AudioManager>().PlayOneShot("FireSet");
+            Debug.Log("Played FireSet sound for FIRST torch lighting.");
 
-    if (objectToDisableOnFirstLight != null)
-    {
-        objectToDisableOnFirstLight.SetActive(false);
-        Debug.Log("Disabled first-time object after relighting torch.");
-    }
-}
+            if (objectToDisableOnFirstLight != null)
+            {
+                objectToDisableOnFirstLight.SetActive(false);
+                Debug.Log("Disabled first-time object after relighting torch.");
+            }
+        }
 
 
         if (RespawnManager.Instance != null && torchInRange != null)
@@ -217,18 +231,41 @@ private static bool torchLitOnce = false; // Tracks if it's the first time
         Debug.LogWarning("No valid ground hit for respawn. Falling back to torch position.");
         return origin;
     }
-    
+
     public void ReactivateTorchParticles()
-{
-    foreach (var ps in torchParticles)
     {
-        ps.Play();
-        var m = ps.main;
-        m.startSize = startSize;
+        if (vignetteOverlay != null)
+            if (vignetteOverlay != null)
+    StartCoroutine(FadeOutVignette());
+
+        foreach (var ps in torchParticles)
+        {
+            ps.Play();
+            var m = ps.main;
+            m.startSize = startSize;
+        }
+
+        isLit = true;
+        Debug.Log("Torch particles reactivated after respawn.");
     }
 
-    isLit = true;
-    Debug.Log("Torch particles reactivated after respawn.");
+private IEnumerator FadeOutVignette(float duration = 1f)
+{
+    if (vignetteOverlay == null) yield break;
+
+    float startAlpha = vignetteOverlay.alpha;
+    float t = 0f;
+
+    while (t < duration)
+    {
+        t += Time.deltaTime;
+        float alpha = Mathf.Lerp(startAlpha, 0f, t / duration);
+        vignetteOverlay.alpha = alpha;
+        yield return null;
+    }
+
+    vignetteOverlay.alpha = 0f;
 }
+
 
 }
